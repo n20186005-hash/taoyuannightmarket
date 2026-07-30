@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://taoyuannightmarket.com/sitemap-index.xml

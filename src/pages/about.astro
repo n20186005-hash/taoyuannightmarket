@@ -1,0 +1,35 @@
+---
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import Layout from "../layouts/Layout.astro";
+
+const title = "關於本站｜桃園觀光夜市";
+const description = "了解 TaoyuanNightMarket.com 的網站定位、資料整理原則與更新方式。";
+---
+<Layout title={title} description={description}>
+  <Header />
+  <main id="main-content" class="content-page">
+    <article class="shell">
+      <p class="eyebrow">ABOUT THIS GUIDE</p>
+      <h1>關於本站</h1>
+      <p class="lead">TaoyuanNightMarket.com 是獨立的非官方旅遊資訊整理網站，目的是幫助第一次到訪的旅客快速了解營業時段、入口、吃法、交通與附近行程。</p>
+
+      <h2>資料整理原則</h2>
+      <ul>
+        <li>夜市位置、一般營業時段與歷史，以桃園市官方旅遊資料為主要依據。</li>
+        <li>指定攤位與餐點會搭配近期資料核對，但個別店休、備料與價格仍以現場為準。</li>
+        <li>不複製 Google 評論，不製作虛假的即時人流、評分或攤位數。</li>
+        <li>交通資訊避免寫死容易變動的班次、停車費率與空位。</li>
+      </ul>
+
+      <h2>照片說明</h2>
+      <p>夜市街景來自專案照片來源記錄；美食卡使用真實食物攝影作為餐點類型示意，並非指定攤位實拍。正式商業使用前，仍會持續檢查各張照片的授權範圍。</p>
+
+      <div class="content-callout">
+        <strong>非官方聲明</strong>
+        <p>本站不是桃園市政府、夜市管理單位或任何攤商的官方網站。營業、價格、交通與攤位狀況請以現場公告為準。</p>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>

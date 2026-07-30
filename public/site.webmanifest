@@ -1,0 +1,14 @@
+{
+  "name": "桃園觀光夜市",
+  "short_name": "桃園夜市",
+  "description": "桃園觀光夜市美食、營業時間、路線與交通攻略。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#17130f",
+  "theme_color": "#17130f",
+  "lang": "zh-Hant-TW",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

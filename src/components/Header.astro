@@ -1,0 +1,42 @@
+---
+import Icon from "./Icon.astro";
+---
+<header class="site-header" data-header>
+  <div class="shell header-inner">
+    <a class="brand" href="/#top" aria-label="桃園觀光夜市首頁">
+      <span class="brand-stamp" aria-hidden="true">桃</span>
+      <span>
+        <strong>桃園觀光夜市</strong>
+        <small>在地夜遊指南</small>
+      </span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="主要導覽">
+      <a href="/#about">夜市特色</a>
+      <a href="/#food">人氣美食</a>
+      <a href="/#route">建議路線</a>
+      <a href="/#transport">交通停車</a>
+      <a href="/#nearby">附近景點</a>
+      <a href="/#faq">常見問題</a>
+    </nav>
+
+    <a class="header-cta" href="/#route">
+      今晚怎麼逛
+      <Icon name="arrow" size={18} />
+    </a>
+
+    <button class="mobile-menu-button" type="button" aria-label="開啟選單" aria-expanded="false" aria-controls="mobile-menu" data-menu-button>
+      <span data-menu-icon><Icon name="menu" /></span>
+      <span class="hidden" data-close-icon><Icon name="close" /></span>
+    </button>
+  </div>
+
+  <nav id="mobile-menu" class="mobile-nav" aria-label="行動版導覽" hidden data-mobile-menu>
+    <a href="/#about">夜市特色</a>
+    <a href="/#food">人氣美食</a>
+    <a href="/#route">建議路線</a>
+    <a href="/#transport">交通停車</a>
+    <a href="/#nearby">附近景點</a>
+    <a href="/#faq">常見問題</a>
+  </nav>
+</header>

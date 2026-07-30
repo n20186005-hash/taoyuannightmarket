@@ -1,0 +1,695 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Icon from "../components/Icon.astro";
+import ResponsiveImage from "../components/ResponsiveImage.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import { faqs, foods, highlights, nearbyPlaces, quickFacts, routes, timeGuidance } from "../data/site";
+
+const title = "桃園觀光夜市｜必吃美食、營業時間、交通與停車攻略";
+const description = "桃園觀光夜市在地攻略：整理北埔路與正康二街必吃美食、營業時間、90 分鐘逛法、交通停車、親子提醒與附近景點。";
+const googleMapsUrl = "https://www.google.com/maps/dir/?api=1&destination=%E6%A1%83%E5%9C%92%E8%A7%80%E5%85%89%E5%A4%9C%E5%B8%82%2C%E6%A1%83%E5%9C%92%E5%B8%82%E6%A1%83%E5%9C%92%E5%8D%80%E5%8C%97%E5%9F%94%E8%B7%AF%E8%88%87%E6%AD%A3%E5%BA%B7%E4%BA%8C%E8%A1%97";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://taoyuannightmarket.com/#website",
+      url: "https://taoyuannightmarket.com/",
+      name: "桃園觀光夜市",
+      inLanguage: "zh-Hant-TW"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://taoyuannightmarket.com/#webpage",
+      url: "https://taoyuannightmarket.com/",
+      name: title,
+      description,
+      isPartOf: { "@id": "https://taoyuannightmarket.com/#website" },
+      about: { "@id": "https://taoyuannightmarket.com/#attraction" },
+      primaryImageOfPage: { "@id": "https://taoyuannightmarket.com/#primaryimage" },
+      inLanguage: "zh-Hant-TW"
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://taoyuannightmarket.com/#primaryimage",
+      contentUrl: "https://taoyuannightmarket.com/images/night-market-street.jpg",
+      caption: "桃園觀光夜市夜間街道、傳統小吃攤與逛街人潮"
+    },
+    {
+      "@type": "TouristAttraction",
+      "@id": "https://taoyuannightmarket.com/#attraction",
+      name: "桃園觀光夜市",
+      alternateName: ["桃園夜市", "中正路夜市", "Taoyuan Tourist Night Market"],
+      url: "https://taoyuannightmarket.com/",
+      description,
+      image: [
+        "https://taoyuannightmarket.com/images/night-market-street.jpg",
+        "https://taoyuannightmarket.com/images/night-market-crowd.jpg",
+        "https://taoyuannightmarket.com/images/sausage-stall.jpg"
+      ],
+      isAccessibleForFree: true,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "中正路與北埔路口一帶",
+        addressLocality: "桃園區",
+        addressRegion: "桃園市",
+        postalCode: "330",
+        addressCountry: "TW"
+      },
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: 25.0026972,
+        longitude: 121.3060018
+      },
+      openingHoursSpecification: {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        opens: "17:30",
+        closes: "23:59"
+      },
+      touristType: ["美食旅客", "親子旅客", "自由行旅客", "在地文化旅客"]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://taoyuannightmarket.com/#faq",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: { "@type": "Answer", text: faq.answer }
+      }))
+    }
+  ]
+};
+---
+<Layout title={title} description={description} jsonLd={structuredData}>
+  <Header />
+
+  <main id="main-content">
+    <section id="top" class="hero" aria-labelledby="hero-title">
+      <ResponsiveImage
+        class="hero-image"
+        srcBase="/images/night-market-street"
+        width="1024"
+        height="683"
+        alt="桃園觀光夜市夜間街道、傳統小吃攤與逛街人潮"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <div class="hero-shade"></div>
+      <div class="hero-grid"></div>
+
+      <div class="shell hero-content">
+        <div class="hero-copy">
+          <div class="live-pill" data-market-status aria-live="polite">
+            <span class="status-dot"></span>
+            <span data-status-text>一般於 17:30 起陸續營業</span>
+          </div>
+          <p class="hero-kicker">桃園人的老字號夜市</p>
+          <h1 id="hero-title">
+            <span class="hero-title-place">桃園觀光夜市</span>
+            <span class="hero-title-tagline">沿著北埔路，吃進老桃園的夜晚。</span>
+          </h1>
+          <p class="hero-lead">超過 200 個攤位散落在街區巷弄，從鼎邊趖、鍋貼、煎蝦餅到古早味甜湯，一次整理第一次來最需要知道的事。</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#food">
+              <Icon name="food" />
+              今晚吃什麼
+            </a>
+            <a class="button button-ghost" href="#route">
+              <Icon name="route" />
+              查看逛街路線
+            </a>
+          </div>
+          <p class="hero-note">各攤商營業與休息日不同，實際狀況請以現場為準。</p>
+        </div>
+
+        <aside class="hero-info" aria-label="桃園觀光夜市快速資訊">
+          <div class="hero-info-label">今晚出發前</div>
+          <div class="hero-info-row">
+            <Icon name="clock" />
+            <div><span>建議時段</span><strong>18:00–22:30</strong></div>
+          </div>
+          <div class="hero-info-row">
+            <Icon name="pin" />
+            <div><span>主要入口</span><strong>中正路 × 北埔路</strong></div>
+          </div>
+          <div class="hero-info-row">
+            <Icon name="walk" />
+            <div><span>建議停留</span><strong>1.5–2.5 小時</strong></div>
+          </div>
+          <div class="hero-info-row">
+            <Icon name="ticket" />
+            <div><span>入場方式</span><strong>免費・開放街區</strong></div>
+          </div>
+          <a class="hero-map-link" href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
+            開啟地圖導航
+            <Icon name="arrow" size={18} />
+          </a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="fact-strip" aria-label="夜市基本資訊">
+      <div class="shell fact-grid">
+        {quickFacts.map((fact) => (
+          <article class="fact-item">
+            <p>{fact.label}</p>
+            <strong>{fact.value}</strong>
+            <span>{fact.hint}</span>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section id="about" class="section section-paper">
+      <div class="shell">
+        <SectionHeading
+          eyebrow="為什麼值得來"
+          title="它不是被規劃出來的景點，而是桃園人一直在使用的夜生活。"
+          description="從舊城、廟口與街邊攤一路發展，桃園觀光夜市保留了生活型夜市最迷人的不整齊：轉個彎又是一攤，熟客知道自己要吃什麼，第一次來也能慢慢找到喜歡的味道。"
+        />
+
+        <div class="highlight-grid">
+          {highlights.map((item, index) => (
+            <article class="highlight-card">
+              <span class="highlight-number">0{index + 1}</span>
+              <p>{item.eyebrow}</p>
+              <h3>{item.title}</h3>
+              <div class="rule"></div>
+              <p class="highlight-description">{item.description}</p>
+            </article>
+          ))}
+        </div>
+
+        <figure class="wide-photo">
+          <ResponsiveImage srcBase="/images/night-market-crowd" width={1024} height={683} alt="桃園觀光夜市的遊戲攤、玩具與親子逛街人潮" />
+          <figcaption>
+            <span>不只吃：遊戲、雜貨與熟悉的街區日常</span>
+            <small>實景照片｜桃園市觀光旅遊局提供</small>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="food" class="section section-dark">
+      <div class="shell">
+        <div class="section-split-heading">
+          <SectionHeading
+            eyebrow="今晚吃什麼"
+            title="先選一份主食，再把胃留給沿路遇見的小吃。"
+            description="這份清單以夜市常見人氣品項與老店為線索，不把價格和營業日寫死；到現場看見排隊、香氣與當天狀況，再決定最適合。"
+          />
+          <div class="food-filters" role="group" aria-label="篩選美食類型">
+            <button type="button" class="filter-button active" data-food-filter="全部" aria-pressed="true">全部</button>
+            <button type="button" class="filter-button" data-food-filter="主食" aria-pressed="false">主食</button>
+            <button type="button" class="filter-button" data-food-filter="點心" aria-pressed="false">點心</button>
+            <button type="button" class="filter-button" data-food-filter="甜品" aria-pressed="false">甜品</button>
+          </div>
+        </div>
+
+        <div class="food-grid" data-food-grid>
+          {foods.map((food, index) => (
+            <article class="food-card" data-food-category={food.category}>
+              <button
+                class="food-photo"
+                type="button"
+                aria-label={`放大查看：${food.name}餐點示意`}
+                data-food-photo
+                data-index={index}
+                data-src={`${food.imageBase}.jpg`}
+                data-alt={food.imageAlt}
+                data-title={food.name}
+              >
+                <ResponsiveImage srcBase={food.imageBase} width={food.imageWidth} height={food.imageHeight} alt={food.imageAlt} />
+                <span>餐點示意・點擊放大</span>
+              </button>
+              <div class="food-card-body">
+                <div class="food-card-top">
+                  <span class="food-index">{String(index + 1).padStart(2, "0")}</span>
+                  <span class="food-category">{food.category}</span>
+                </div>
+                <h3>{food.name}</h3>
+                <p>{food.description}</p>
+                <div class="food-details">
+                  <span>{food.share}</span>
+                  <span>{food.location}</span>
+                </div>
+                <div class="food-note"><Icon name="spark" size={17} />{food.note}</div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <p class="food-disclaimer">照片為相近餐點類型的真實攝影示意，並非指定攤位實拍；菜色與營業狀況請以現場為準。</p>
+
+        <div class="photo-pair">
+          <figure>
+            <ResponsiveImage srcBase="/images/sausage-stall" width={1024} height={683} alt="桃園觀光夜市香腸攤位與正在點餐的遊客" />
+            <figcaption>熱食攤前的等待，也是夜市節奏的一部分。</figcaption>
+          </figure>
+          <figure>
+            <ResponsiveImage srcBase="/images/night-market-street" width={1024} height={683} alt="桃園觀光夜市小吃攤、內用座位與逛街遊客" />
+            <figcaption>想吃更多種類，兩人同行最適合每攤共享一份。</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <dialog id="food-lightbox" class="food-lightbox" aria-label="美食照片大圖預覽">
+      <div class="food-lightbox-inner" data-food-backdrop>
+        <button type="button" class="lightbox-close" aria-label="關閉大圖" data-food-close>×</button>
+        <button type="button" class="lightbox-nav lightbox-prev" aria-label="上一張照片" data-food-prev>‹</button>
+        <figure>
+          <img id="food-lightbox-image" src={`${foods[0].imageBase}.jpg`} alt={foods[0].imageAlt} />
+          <figcaption>
+            <strong id="food-lightbox-title"></strong>
+            <span id="food-lightbox-counter"></span>
+          </figcaption>
+        </figure>
+        <button type="button" class="lightbox-nav lightbox-next" aria-label="下一張照片" data-food-next>›</button>
+      </div>
+    </dialog>
+
+    <section id="route" class="section section-warm">
+      <div class="shell">
+        <SectionHeading
+          eyebrow="第一次怎麼逛"
+          title="不用走完整個三公里，選一條適合自己的節奏。"
+          description="夜市散布在北埔路、正康二街與周邊巷弄。先從中正路與北埔路口進場，再依同行者與時間選路線，能少走回頭路。"
+          align="center"
+        />
+
+        <div class="route-tabs" role="tablist" aria-label="選擇建議路線">
+          {routes.map((route, index) => (
+            <button
+              type="button"
+              role="tab"
+              class:list={["route-tab", index === 0 && "active"]}
+              aria-selected={index === 0 ? "true" : "false"}
+              aria-controls={`route-panel-${route.id}`}
+              id={`route-tab-${route.id}`}
+              data-route-tab={route.id}
+            >
+              <span>{route.label}</span>
+              <small>{route.duration}</small>
+            </button>
+          ))}
+        </div>
+
+        {routes.map((route, index) => (
+          <div
+            class="route-panel"
+            role="tabpanel"
+            id={`route-panel-${route.id}`}
+            aria-labelledby={`route-tab-${route.id}`}
+            hidden={index !== 0}
+            data-route-panel={route.id}
+          >
+            <div class="route-summary">
+              <Icon name="route" size={28} />
+              <p>{route.summary}</p>
+            </div>
+            <ol class="route-steps">
+              {route.steps.map((step, stepIndex) => (
+                <li>
+                  <div class="step-marker"><span>{stepIndex + 1}</span></div>
+                  <div class="step-time">{step.time}</div>
+                  <div class="step-copy">
+                    <h3>{step.title}</h3>
+                    <p>{step.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
+
+        <div class="route-tip">
+          <div>
+            <span class="route-tip-label">兩人最剛好</span>
+            <h3>每攤只點一份，會比各吃各的多認識好幾種味道。</h3>
+          </div>
+          <p>建議順序：湯或鍋貼 → 煎炸點心 → 遊戲與雜貨 → 甜湯或豆花。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section time-section" aria-label="人潮時段參考">
+      <div class="shell">
+        <SectionHeading
+          eyebrow="人潮時段參考"
+          title="幾點到，會決定你怎麼逛。"
+          description="以下是一般經驗型建議，不是即時人流。天候、平假日與活動都可能改變當晚狀況。"
+          align="center"
+        />
+        <div class="time-grid">
+          {timeGuidance.map((slot) => (
+            <article class:list={["time-card", `time-${slot.tone}`]}>
+              <time>{slot.time}</time>
+              <h3>{slot.title}</h3>
+              <p>{slot.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section history-section">
+      <div class="shell history-grid">
+        <div>
+          <SectionHeading
+            eyebrow="夜市小歷史"
+            title="從景福宮旁的中正路夜市，搬到今天的北埔路。"
+            description="這段搬遷史解釋了它為什麼不像大型花園夜市：它從桃園舊城的廟宇、商業與居民日常中自然長出來。"
+          />
+          <div class="history-timeline">
+            <div class="history-item">
+              <span>早期</span>
+              <div><h3>圍繞景福宮與中正路聚集</h3><p>攤商跟著廟口與舊城人流發展，因此也曾被稱為「中正路夜市」。</p></div>
+            </div>
+            <div class="history-item">
+              <span>擴張</span>
+              <div><h3>攤位延伸，交通壓力增加</h3><p>夜市規模逐漸擴大，街道通行與城市生活需要重新平衡。</p></div>
+            </div>
+            <div class="history-item featured">
+              <span>1988</span>
+              <div><h3>遷至北埔路、正康二街一帶</h3><p>更名為桃園觀光夜市，延續老店、美食與在地人的夜晚記憶。</p></div>
+            </div>
+          </div>
+        </div>
+
+        <figure class="history-photo">
+          <ResponsiveImage srcBase="/images/night-market-lantern" width={1024} height={683} alt="桃園觀光夜市街口、商店與夜間人潮" />
+          <figcaption>街邊商店、攤位與行人交錯，是這座夜市的真實尺度。</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="transport" class="section section-paper transport-section">
+      <div class="shell">
+        <SectionHeading
+          eyebrow="交通與停車"
+          title="把目的地設在「中正路與北埔路口」，比只輸入夜市名稱更清楚。"
+          description="桃園觀光夜市位於舊城街區。大眾運輸與計程車通常比晚間臨時找車位輕鬆；自駕建議提早到，停在外圍再步行。"
+        />
+
+        <div class="transport-grid">
+          <article class="transport-card primary-card">
+            <Icon name="train" size={30} />
+            <p class="transport-label">大眾運輸</p>
+            <h3>從桃園火車站出發</h3>
+            <p>可搭公車至北埔路口等鄰近站點，或直接搭計程車前往主要入口。班次與站點可能調整，出發前以即時導航為準。</p>
+            <div class="transport-meta"><span>適合</span><strong>單人、朋友、外地旅客</strong></div>
+          </article>
+          <article class="transport-card">
+            <Icon name="car" size={30} />
+            <p class="transport-label">自行開車</p>
+            <h3>提早停、不要硬闖入口</h3>
+            <p>中正路、北埔路及周邊巷弄有路邊格與民營停車場，假日晚餐時段容易客滿。建議 18:00 前抵達。</p>
+            <div class="transport-meta"><span>提醒</span><strong>費率與空位以現場為準</strong></div>
+          </article>
+          <article class="transport-card">
+            <Icon name="family" size={30} />
+            <p class="transport-label">親子與長者</p>
+            <h3>17:30–18:30 最舒服</h3>
+            <p>提早進場較容易推嬰兒車，也能先找洗手間。熱門時段請優先走較寬路段並留意熱油攤位。</p>
+            <div class="transport-meta"><span>建議</span><strong>晚間八點前完成主行程</strong></div>
+          </article>
+          <article class="transport-card">
+            <Icon name="rain" size={30} />
+            <p class="transport-label">雨天備案</p>
+            <h3>小雨可逛，大雨不勉強</h3>
+            <p>街區沒有連續完整遮棚，雨傘會讓動線更擁擠。遇到雷雨或強風，改安排室內行程更安全。</p>
+            <div class="transport-meta"><span>雨具</span><strong>輕便雨衣比大傘好走</strong></div>
+          </article>
+          <article class="transport-card">
+            <Icon name="plane" size={30} />
+            <p class="transport-label">桃園機場出發</p>
+            <h3>先到市區，再轉乘前往</h3>
+            <p>可依即時導航選擇機場捷運轉台鐵、公車或計程車。攜帶大件行李時，直接叫車較省力。</p>
+            <div class="transport-meta"><span>提醒</span><strong>預留轉乘與晚間回程時間</strong></div>
+          </article>
+          <article class="transport-card">
+            <Icon name="accessible" size={30} />
+            <p class="transport-label">輪椅與嬰兒車</p>
+            <h3>提早到、走較寬路段</h3>
+            <p>夜市為開放街區，部分路面、攤位與人潮可能影響通行；建議避開晚間八點後高峰。</p>
+            <div class="transport-meta"><span>建議</span><strong>同行者協助並留意車流</strong></div>
+          </article>
+        </div>
+
+        <div class="location-panel">
+          <div class="location-copy">
+            <p class="eyebrow">抵達定位</p>
+            <h3>桃園市桃園區<br />中正路與北埔路口</h3>
+            <p>從入口沿北埔路進場，再轉往正康二街。返程叫車時，建議回到中正路等較寬道路。</p>
+            <a class="button button-dark" href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
+              開啟地圖導航
+              <Icon name="arrow" size={18} />
+            </a>
+          </div>
+          <div class="map-embed">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3615.9240320905005!2d121.3060018!3d25.0026972!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x34681faa93c7cae1%3A0xea9285a4e0027713!2z5qGD5Zut6KeC5YWJ5aSc5biC!5e0!3m2!1szh-TW!2stw!4v1785382743602!5m2!1szh-TW!2stw"
+              title="桃園觀光夜市 Google 地圖"
+              width="600"
+              height="450"
+              style="border:0;"
+              allowfullscreen
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="nearby" class="section old-town-section">
+      <div class="shell">
+        <div class="nearby-heading">
+          <div>
+            <p class="eyebrow">附近順遊</p>
+            <h2>把夜市放在桃園舊城的最後一站。</h2>
+          </div>
+          <p>午後先看展、廟宇與老街，傍晚再走進夜市。距離為官方旅遊資料的步行參考，實際路線請依導航與現場通行狀況調整。</p>
+        </div>
+        <div class="nearby-grid">
+          {nearbyPlaces.map((place, index) => (
+            <article class="nearby-card">
+              <span class="nearby-index">{String(index + 1).padStart(2, "0")}</span>
+              <p class="nearby-distance">{place.distance}</p>
+              <h3>{place.name}</h3>
+              <p>{place.description}</p>
+              <div><span>{place.bestTime}</span><strong>{place.stay}</strong></div>
+            </article>
+          ))}
+        </div>
+        <div class="nearby-finish">
+          <span>最後一站</span>
+          <strong>桃園觀光夜市</strong>
+          <p>約 17:30 起陸續營業，用傳統小吃結束一天。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section section-paper faq-section">
+      <div class="shell faq-layout">
+        <div class="faq-intro">
+          <SectionHeading
+            eyebrow="常見問題"
+            title="出發前，再確認這幾件事。"
+            description="夜市是由許多獨立攤商組成的街區，天候、備料與個別休息日都可能影響當晚狀況。"
+          />
+          <div class="faq-callout">
+            <strong>別走錯夜市</strong>
+            <p>桃園觀光夜市位於桃園區；中壢觀光夜市位於中壢區，兩者不是同一個地方。</p>
+          </div>
+        </div>
+
+        <div class="faq-list">
+          {faqs.map((faq, index) => (
+            <article class="faq-item">
+              <h3>
+                <button type="button" aria-expanded={index === 0 ? "true" : "false"} aria-controls={`faq-answer-${index}`} data-faq-button>
+                  <span>{faq.question}</span>
+                  <span class="faq-plus" aria-hidden="true"></span>
+                </button>
+              </h3>
+              <div id={`faq-answer-${index}`} class="faq-answer" hidden={index !== 0}>
+                <p>{faq.answer}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="closing-section">
+      <ResponsiveImage srcBase="/images/night-market-street" width={1024} height={683} alt="桃園觀光夜市熱鬧的小吃街景" />
+      <div class="closing-overlay"></div>
+      <div class="shell closing-content">
+        <p>今晚，從一碗熱湯開始。</p>
+        <h2>不用把每一攤都吃完，<br />記住一兩個桃園的味道就好。</h2>
+        <a class="button button-primary" href="#top">回到行前資訊</a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script>
+    const menuButton = document.querySelector('[data-menu-button]');
+    const mobileMenu = document.querySelector('[data-mobile-menu]');
+    const menuIcon = document.querySelector('[data-menu-icon]');
+    const closeIcon = document.querySelector('[data-close-icon]');
+
+    menuButton?.addEventListener('click', () => {
+      const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
+      menuButton.setAttribute('aria-expanded', String(!isOpen));
+      mobileMenu?.toggleAttribute('hidden', isOpen);
+      menuIcon?.classList.toggle('hidden', !isOpen);
+      closeIcon?.classList.toggle('hidden', isOpen);
+    });
+
+    mobileMenu?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        menuButton?.setAttribute('aria-expanded', 'false');
+        mobileMenu?.setAttribute('hidden', '');
+        menuIcon?.classList.remove('hidden');
+        closeIcon?.classList.add('hidden');
+      });
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && menuButton?.getAttribute('aria-expanded') === 'true') {
+        menuButton.setAttribute('aria-expanded', 'false');
+        mobileMenu?.setAttribute('hidden', '');
+        menuIcon?.classList.remove('hidden');
+        closeIcon?.classList.add('hidden');
+        menuButton.focus();
+      }
+    });
+
+    const statusText = document.querySelector('[data-status-text]');
+    const statusPill = document.querySelector('[data-market-status]');
+    if (statusText && statusPill) {
+      const parts = new Intl.DateTimeFormat('zh-TW', {
+        timeZone: 'Asia/Taipei',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+        hourCycle: 'h23'
+      }).formatToParts(new Date());
+      const hour = Number(parts.find((part) => part.type === 'hour')?.value ?? 0);
+      const minute = Number(parts.find((part) => part.type === 'minute')?.value ?? 0);
+      const total = hour * 60 + minute;
+      const open = total >= 17 * 60 + 30 && total <= 23 * 60 + 59;
+      if (open) {
+        statusText.textContent = '現在是一般夜市營業時段';
+        statusPill.classList.add('is-open');
+      } else if (total >= 16 * 60 + 30 && total < 17 * 60 + 30) {
+        statusText.textContent = '攤位即將在 17:30 起陸續營業';
+      } else {
+        statusText.textContent = '建議傍晚 17:30 後再訪';
+      }
+    }
+
+    const filterButtons = document.querySelectorAll('[data-food-filter]');
+    const foodCards = document.querySelectorAll('[data-food-category]');
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const filter = button.getAttribute('data-food-filter');
+        filterButtons.forEach((item) => {
+          const active = item === button;
+          item.classList.toggle('active', active);
+          item.setAttribute('aria-pressed', String(active));
+        });
+        foodCards.forEach((card) => {
+          const category = card.getAttribute('data-food-category');
+          card.toggleAttribute('hidden', filter !== '全部' && filter !== category);
+        });
+      });
+    });
+
+    const routeTabs = document.querySelectorAll('[data-route-tab]');
+    const routePanels = document.querySelectorAll('[data-route-panel]');
+    routeTabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const id = tab.getAttribute('data-route-tab');
+        routeTabs.forEach((item) => {
+          const active = item === tab;
+          item.classList.toggle('active', active);
+          item.setAttribute('aria-selected', String(active));
+        });
+        routePanels.forEach((panel) => {
+          panel.toggleAttribute('hidden', panel.getAttribute('data-route-panel') !== id);
+        });
+      });
+      tab.addEventListener('keydown', (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        const tabs = Array.from(routeTabs);
+        const current = tabs.indexOf(tab);
+        const next = event.key === 'Home'
+          ? 0
+          : event.key === 'End'
+            ? tabs.length - 1
+            : (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+        (tabs[next] as HTMLButtonElement)?.focus();
+        (tabs[next] as HTMLButtonElement)?.click();
+      });
+    });
+
+    document.querySelectorAll('[data-faq-button]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const expanded = button.getAttribute('aria-expanded') === 'true';
+        const answerId = button.getAttribute('aria-controls');
+        const answer = answerId ? document.getElementById(answerId) : null;
+        button.setAttribute('aria-expanded', String(!expanded));
+        answer?.toggleAttribute('hidden', expanded);
+      });
+    });
+
+    const foodPhotos = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-food-photo]'));
+    const foodLightbox = document.querySelector<HTMLDialogElement>('#food-lightbox');
+    const foodLightboxImage = document.querySelector<HTMLImageElement>('#food-lightbox-image');
+    const foodLightboxTitle = document.querySelector<HTMLElement>('#food-lightbox-title');
+    const foodLightboxCounter = document.querySelector<HTMLElement>('#food-lightbox-counter');
+    const foodClose = document.querySelector<HTMLButtonElement>('[data-food-close]');
+    const foodPrev = document.querySelector<HTMLButtonElement>('[data-food-prev]');
+    const foodNext = document.querySelector<HTMLButtonElement>('[data-food-next]');
+    const foodBackdrop = document.querySelector<HTMLElement>('[data-food-backdrop]');
+    let activeFoodPhoto = 0;
+
+    const showFoodPhoto = (index: number) => {
+      const normalized = (index + foodPhotos.length) % foodPhotos.length;
+      const item = foodPhotos[normalized];
+      if (!item || !foodLightboxImage || !foodLightboxTitle || !foodLightboxCounter) return;
+      activeFoodPhoto = normalized;
+      foodLightboxImage.src = item.dataset.src || '';
+      foodLightboxImage.alt = item.dataset.alt || '';
+      foodLightboxTitle.textContent = item.dataset.title || '';
+      foodLightboxCounter.textContent = `${normalized + 1} / ${foodPhotos.length}・餐點示意`;
+    };
+
+    foodPhotos.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        showFoodPhoto(index);
+        foodLightbox?.showModal();
+      });
+    });
+    foodClose?.addEventListener('click', () => foodLightbox?.close());
+    foodPrev?.addEventListener('click', () => showFoodPhoto(activeFoodPhoto - 1));
+    foodNext?.addEventListener('click', () => showFoodPhoto(activeFoodPhoto + 1));
+    foodBackdrop?.addEventListener('click', (event) => {
+      if (event.target === foodBackdrop) foodLightbox?.close();
+    });
+    foodLightbox?.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') showFoodPhoto(activeFoodPhoto - 1);
+      if (event.key === 'ArrowRight') showFoodPhoto(activeFoodPhoto + 1);
+    });
+  </script>
+</Layout>

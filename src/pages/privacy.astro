@@ -1,0 +1,36 @@
+---
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import Layout from "../layouts/Layout.astro";
+
+const title = "隱私權說明｜桃園觀光夜市";
+const description = "TaoyuanNightMarket.com 的網站分析、外部服務與隱私權說明。";
+---
+<Layout title={title} description={description}>
+  <Header />
+  <main id="main-content" class="content-page">
+    <article class="shell">
+      <p class="eyebrow">PRIVACY</p>
+      <h1>隱私權說明</h1>
+      <p class="lead">本站不提供會員功能，也不主動要求訪客提交姓名、電話、地址或付款資料。</p>
+
+      <h2>網站分析</h2>
+      <p>本站使用 Google Analytics 4 了解頁面造訪次數、裝置類型和一般瀏覽行為，以改善內容與使用體驗。相關服務可能依據其政策設定或讀取瀏覽器識別資訊。</p>
+
+      <h2>外部服務</h2>
+      <p>頁面包含 Google 地圖嵌入與導航連結。開啟地圖或與地圖互動時，Google 可能依其服務條款與隱私權政策處理必要資訊。</p>
+
+      <h2>Cookie 與瀏覽器控制</h2>
+      <p>訪客可以透過瀏覽器設定限制或移除 Cookie，也可以使用瀏覽器隱私保護或內容阻擋功能。限制後，部分統計或地圖功能可能無法正常使用。</p>
+
+      <h2>資料安全</h2>
+      <p>本站採用靜態頁面，不設置使用者資料庫。第三方服務的資料處理方式由其各自政策規範。</p>
+
+      <div class="content-callout">
+        <strong>政策調整</strong>
+        <p>若未來增加廣告、表單、訂閱或其他資料蒐集功能，本頁面將同步更新相關用途與處理方式。</p>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>
