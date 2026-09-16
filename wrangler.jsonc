@@ -1,9 +1,14 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "taoyuannightmarket",
+  // Astro Cloudflare adapter 的統一入口（同時供 astro dev / preview 與正式部署使用）
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-07-29",
+  "compatibility_flags": ["nodejs_compat"],
+  // 由 Astro 建置輸出的靜態資產（HTML、圖片、manifest、sw.js 等）
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   },

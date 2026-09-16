@@ -1,0 +1,49 @@
+---
+import Icon from "./Icon.astro";
+import SectionHeading from "./SectionHeading.astro";
+import { audiencePlans } from "../data/site";
+---
+
+<section id="audience" class="section section-warm audience-section" aria-labelledby="audience-title">
+  <div class="shell">
+    <SectionHeading
+      id="audience-title"
+      eyebrow="按人群訂製的遊覽方案"
+      title="親子、攝影、低體力：三種走法"
+      description="同樣的夜市，不同的同行者與體力，走法就該不一樣。以下三條方案分別對應親子家庭、攝影夜拍與低體力／無障礙需求，可依出行組成與節奏選用。"
+    />
+
+    <div class="audience-grid">
+      {audiencePlans.map((plan) => (
+        <article class="audience-card">
+          <div class="audience-head">
+            <span class="audience-icon" aria-hidden="true"><Icon name={plan.icon as any} size={22} /></span>
+            <div>
+              <h3>{plan.label}</h3>
+              <p class="audience-meta">建議 {plan.bestTime} · 停留 {plan.duration}</p>
+            </div>
+          </div>
+          <p class="audience-summary">{plan.summary}</p>
+          <div class="audience-cols">
+            <div class="audience-col">
+              <p class="audience-sub">重點安排</p>
+              <ul>
+                {plan.focus.map((focus) => (
+                  <li>{focus}</li>
+                ))}
+              </ul>
+            </div>
+            <div class="audience-col">
+              <p class="audience-sub">留意事項</p>
+              <ul>
+                {plan.care.map((care) => (
+                  <li>{care}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

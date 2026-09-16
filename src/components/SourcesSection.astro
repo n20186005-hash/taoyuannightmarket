@@ -1,0 +1,49 @@
+---
+import Icon from "./Icon.astro";
+import SectionHeading from "./SectionHeading.astro";
+
+interface SourceItem {
+  tag: string;
+  title: string;
+  meta: string;
+  note: string;
+  url: string;
+  linkText: string;
+}
+
+interface Props {
+  items: SourceItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<section id="sources" class="section sources-section" aria-labelledby="sources-title">
+  <div class="shell">
+    <SectionHeading
+      eyebrow="資料來源"
+      title="本站的資訊整理與出處"
+      description="本站為非官方整理站，以下資料來源與同步時間供查核；實際營業、價格與攤位狀況，請以現場與官方公告為準。"
+      align="center"
+    />
+
+    <div class="sources-grid">
+      {items.map((item) => (
+        <article class="source-card">
+          <p class="source-tag">{item.tag}</p>
+          <h3>{item.title}</h3>
+          <p class="source-meta">{item.meta}</p>
+          <p class="source-note">{item.note}</p>
+          <a class="source-link" href={item.url} target="_blank" rel="noopener noreferrer">
+            {item.linkText}
+            <Icon name="arrow" size={16} />
+          </a>
+        </article>
+      ))}
+    </div>
+
+    <p class="sources-footnote">
+      本站非桃園市政府、夜市管理單位或任何攤商的官方網站；所有外部連結（含 Google 地圖）均保留原出處，版權與內容歸原作者與平台所有。
+    </p>
+  </div>
+</section>

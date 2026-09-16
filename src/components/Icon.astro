@@ -1,6 +1,6 @@
 ---
 interface Props {
-  name: "clock" | "pin" | "walk" | "ticket" | "arrow" | "menu" | "close" | "train" | "car" | "family" | "rain" | "spark" | "route" | "food" | "plane" | "accessible";
+  name: "clock" | "pin" | "walk" | "ticket" | "arrow" | "menu" | "close" | "train" | "car" | "family" | "rain" | "spark" | "route" | "food" | "plane" | "accessible" | "wc" | "parking" | "bed" | "store" | "fuel" | "bolt" | "cash" | "medical" | "info" | "leaf" | "camera" | "sun" | "cloud" | "shield" | "shirt" | "backpack" | "umbrella" | "wind";
   size?: number;
   class?: string;
 }
@@ -21,7 +21,25 @@ const paths: Record<string, string> = {
   route: '<circle cx="6" cy="18" r="2"></circle><circle cx="18" cy="6" r="2"></circle><path d="M8 18h3a3 3 0 0 0 3-3V9a3 3 0 0 1 3-3"></path>',
   food: '<path d="M7 3v8M4 3v5a3 3 0 0 0 6 0V3M7 11v10M16 3c-2 3-2 8 0 10v8M19 3v18"></path>',
   plane: '<path d="m3 11 18-8-8 18-2-7-8-3Z"></path><path d="m11 14 4-4"></path>',
-  accessible: '<circle cx="12" cy="4" r="2"></circle><path d="M10 8h4l1 5h-4l-1 5M8 11a5 5 0 1 0 7 6M15 18h4l2 3"></path>'
+  accessible: '<circle cx="12" cy="4" r="2"></circle><path d="M10 8h4l1 5h-4l-1 5M8 11a5 5 0 1 0 7 6M15 18h4l2 3"></path>',
+  wc: '<path d="M12 3v18"></path><circle cx="7" cy="6" r="2"></circle><path d="M4 21v-6H3l1.5-4h5L11 15H10v6"></path><circle cx="17" cy="6" r="2"></circle><path d="M15 15h4l-1 6h-2z"></path><path d="M17 8v5"></path>',
+  parking: '<rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M10 16.5V8h3a2.6 2.6 0 0 1 0 5.2h-3"></path>',
+  bed: '<path d="M3 19v-7h13a4 4 0 0 1 4 4v3"></path><path d="M3 19h18M3 12V7"></path><path d="M7 12V9.2h5V12"></path><circle cx="9.5" cy="8.6" r="1.4"></circle>',
+  store: '<path d="M4 9h16l-1 11H5z"></path><path d="M4 9 5.5 4h13L20 9"></path><path d="M9.5 20v-6h5v6"></path>',
+  fuel: '<path d="M5 21V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v16"></path><path d="M4 21h11M7.5 9h4"></path><path d="M13 7h3a2 2 0 0 1 2 2v7.5a1.5 1.5 0 0 0 3 0V11l-2-3.2"></path>',
+  bolt: '<path d="M13 2 4.5 13.5H10l-1 8.5L18.5 10H13z"></path>',
+  cash: '<rect x="3" y="6" width="18" height="12" rx="2.5"></rect><circle cx="12" cy="12" r="2.6"></circle><path d="M6.5 9.5v5M17.5 9.5v5"></path>',
+  medical: '<rect x="4" y="4" width="16" height="16" rx="4"></rect><path d="M12 8.5v7M8.5 12h7"></path>',
+  info: '<circle cx="12" cy="12" r="9"></circle><path d="M12 11v5.5M12 7.8h.01"></path>',
+  leaf: '<path d="M5 19c0-8 6-13 14-13 0 8-5 14-13 14"></path><path d="M5 19c3-3.2 6.2-5.2 10-6.2"></path>',
+  camera: '<path d="M4 8h3l1.5-2.2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"></path><circle cx="12" cy="13" r="3.4"></circle>',
+  sun: '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2.2M12 19.8V22M2 12h2.2M19.8 12H22M4.9 4.9 6.5 6.5M17.5 17.5l1.6 1.6M4.9 19.1 6.5 17.5M17.5 6.5l1.6-1.6"></path>',
+  cloud: '<path d="M7 18a4 4 0 1 1 1-7.9A5 5 0 0 1 18 11a3.5 3.5 0 0 1-1 6.9H7Z"></path>',
+  shield: '<path d="M12 3l7 2.8v5.4c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V5.8z"></path><path d="m9 12 2 2 4-4"></path>',
+  shirt: '<path d="M9 3 4.8 5.3 6.2 9.2l1.8-.7V21h8V8.5l1.8.7 1.4-3.9L15 3l-1.6 1.9h-2.8z"></path>',
+  backpack: '<path d="M6 10a6 6 0 0 1 12 0v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2Z"></path><path d="M9 10V7.6a3 3 0 0 1 6 0V10M9 21v-4h6v4M10 13h4"></path>',
+  umbrella: '<path d="M12 3a9 9 0 0 1 9 9H3a9 9 0 0 1 9-9Z"></path><path d="M12 12v6.4a2.6 2.6 0 0 0 5.2 0"></path><path d="M12 3v1.4"></path>',
+  wind: '<path d="M3 8.5h9.5a2.5 2.5 0 1 0-2.5-2.5M3 12.5h13a2.5 2.5 0 1 1-2.5 2.5M3 16.5h7"></path>'
 };
 ---
 <svg class={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={paths[name]}></svg>

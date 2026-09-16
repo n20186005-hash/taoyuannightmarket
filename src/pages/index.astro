@@ -5,10 +5,22 @@ import Footer from "../components/Footer.astro";
 import Icon from "../components/Icon.astro";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
 import SectionHeading from "../components/SectionHeading.astro";
-import { faqs, foods, highlights, nearbyPlaces, quickFacts, routes, timeGuidance } from "../data/site";
+import Reviews from "../components/Reviews.astro";
+import SourcesSection from "../components/SourcesSection.astro";
+import Weather from "../components/Weather.astro";
+import AudiencePlans from "../components/AudiencePlans.astro";
+import DayTripPlans from "../components/DayTripPlans.astro";
+import Heritage from "../components/Heritage.astro";
+import SeasonalGuide from "../components/SeasonalGuide.astro";
+import VisitorFacilities from "../components/VisitorFacilities.astro";
+import VisitorResponsibility from "../components/VisitorResponsibility.astro";
+import { attraction, faqs, foods, googleRating, highlights, nearbyPlaces, quickFacts, routes, sourceReferences, timeGuidance } from "../data/site";
 
-const title = "桃園觀光夜市｜必吃美食、營業時間、交通與停車攻略";
-const description = "桃園觀光夜市在地攻略：整理北埔路與正康二街必吃美食、營業時間、90 分鐘逛法、交通停車、親子提醒與附近景點。";
+// 首頁其餘內容維持靜態；僅天氣島嶼於伺服器隨請求取得即時資料。
+export const prerender = true;
+
+const title = "桃園觀光夜市幾點開？營業時間、北埔路美食與停車場攻略";
+const description = "桃園觀光夜市位於桃園區北埔路與正康二街，一般每日 17:30 開始營業至約 00:00。整理必吃美食、逛街路線、交通與周邊停車場、親子與雨天提醒，並彙整 Google 地圖評價重點。";
 const googleMapsUrl = "https://www.google.com/maps/dir/?api=1&destination=%E6%A1%83%E5%9C%92%E8%A7%80%E5%85%89%E5%A4%9C%E5%B8%82%2C%E6%A1%83%E5%9C%92%E5%B8%82%E6%A1%83%E5%9C%92%E5%8D%80%E5%8C%97%E5%9F%94%E8%B7%AF%E8%88%87%E6%AD%A3%E5%BA%B7%E4%BA%8C%E8%A1%97";
 
 const structuredData = {
@@ -42,7 +54,14 @@ const structuredData = {
       "@type": "TouristAttraction",
       "@id": "https://taoyuannightmarket.com/#attraction",
       name: "桃園觀光夜市",
-      alternateName: ["桃園夜市", "中正路夜市", "Taoyuan Tourist Night Market"],
+      alternateName: [
+        "桃園夜市",
+        "北埔路夜市",
+        "中正路夜市",
+        "桃园观光夜市",
+        "Taoyuan Night Market",
+        "Taoyuan Tourist Night Market"
+      ],
       url: "https://taoyuannightmarket.com/",
       description,
       image: [
@@ -51,9 +70,15 @@ const structuredData = {
         "https://taoyuannightmarket.com/images/sausage-stall.jpg"
       ],
       isAccessibleForFree: true,
+      telephone: attraction.telephone,
+      hasMap: attraction.mapsShareUrl,
+      sameAs: [
+        attraction.mapsShareUrl,
+        attraction.govtTourismUrl
+      ],
       address: {
         "@type": "PostalAddress",
-        streetAddress: "中正路與北埔路口一帶",
+        streetAddress: "北埔路與正康二街一帶（主要入口：中正路與北埔路口）",
         addressLocality: "桃園區",
         addressRegion: "桃園市",
         postalCode: "330",
@@ -70,7 +95,14 @@ const structuredData = {
         opens: "17:30",
         closes: "23:59"
       },
-      touristType: ["美食旅客", "親子旅客", "自由行旅客", "在地文化旅客"]
+      touristType: ["美食旅客", "親子旅客", "自由行旅客", "在地文化旅客"],
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: googleRating.rating,
+        reviewCount: googleRating.reviewCount,
+        bestRating: 5,
+        worstRating: 1
+      }
     },
     {
       "@type": "FAQPage",
@@ -110,6 +142,7 @@ const structuredData = {
           <p class="hero-kicker">桃園人的老字號夜市</p>
           <h1 id="hero-title">
             <span class="hero-title-place">桃園觀光夜市</span>
+            <span class="hero-title-loc">桃園市桃園區 · 台灣</span>
             <span class="hero-title-tagline">沿著北埔路，吃進老桃園的夜晚。</span>
           </h1>
           <p class="hero-lead">超過 200 個攤位散落在街區巷弄，從鼎邊趖、鍋貼、煎蝦餅到古早味甜湯，一次整理第一次來最需要知道的事。</p>
@@ -164,6 +197,24 @@ const structuredData = {
       </div>
     </section>
 
+    <section id="weather" class="section weather-section" aria-label="即時天氣">
+      <div class="shell">
+        <Weather server:defer>
+          <div class="weather-loading" slot="fallback" aria-hidden="true">
+            <p class="eyebrow">即時天氣</p>
+            <div class="weather-loading-bar"></div>
+          </div>
+        </Weather>
+      </div>
+    </section>
+
+    <Reviews
+      rating={googleRating.rating}
+      reviewCount={googleRating.reviewCount}
+      mapsUrl={attraction.mapsShareUrl}
+      syncLabel={googleRating.syncLabel}
+    />
+
     <section id="about" class="section section-paper">
       <div class="shell">
         <SectionHeading
@@ -171,6 +222,19 @@ const structuredData = {
           title="它不是被規劃出來的景點，而是桃園人一直在使用的夜生活。"
           description="從舊城、廟口與街邊攤一路發展，桃園觀光夜市保留了生活型夜市最迷人的不整齊：轉個彎又是一攤，熟客知道自己要吃什麼，第一次來也能慢慢找到喜歡的味道。"
         />
+
+        <p class="entity-intro">
+          歡迎來到 <strong>桃園觀光夜市</strong>（Taoyuan Night Market，也就是桃園人熟悉的桃園夜市）。它位於台灣桃園市桃園區，是當地代表性的老字號觀光夜市，也是外地旅客來桃園逛街、吃宵夜的主要據點之一；逛完夜市，還能順遊鄰近的景福宮、桃園 77 藝文町等舊城景點。
+        </p>
+        <nav class="entity-breadcrumb" aria-label="位置歸屬階層">
+          <span>桃園觀光夜市</span>
+          <span aria-hidden="true">→</span>
+          <span>桃園區</span>
+          <span aria-hidden="true">→</span>
+          <span>桃園市</span>
+          <span aria-hidden="true">→</span>
+          <span>台灣</span>
+        </nav>
 
         <div class="highlight-grid">
           {highlights.map((item, index) => (
@@ -337,6 +401,10 @@ const structuredData = {
       </div>
     </section>
 
+    <AudiencePlans />
+
+    <DayTripPlans />
+
     <section class="section time-section" aria-label="人潮時段參考">
       <div class="shell">
         <SectionHeading
@@ -356,6 +424,8 @@ const structuredData = {
         </div>
       </div>
     </section>
+
+    <SeasonalGuide />
 
     <section class="section history-section">
       <div class="shell history-grid">
@@ -387,6 +457,8 @@ const structuredData = {
         </figure>
       </div>
     </section>
+
+    <Heritage />
 
     <section id="transport" class="section section-paper transport-section">
       <div class="shell">
@@ -495,6 +567,8 @@ const structuredData = {
       </div>
     </section>
 
+    <VisitorFacilities />
+
     <section id="faq" class="section section-paper faq-section">
       <div class="shell faq-layout">
         <div class="faq-intro">
@@ -526,6 +600,10 @@ const structuredData = {
         </div>
       </div>
     </section>
+
+    <VisitorResponsibility />
+
+    <SourcesSection items={sourceReferences} />
 
     <section class="closing-section">
       <ResponsiveImage srcBase="/images/night-market-street" width={1024} height={683} alt="桃園觀光夜市熱鬧的小吃街景" />

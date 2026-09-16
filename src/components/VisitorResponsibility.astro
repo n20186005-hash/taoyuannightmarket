@@ -1,0 +1,30 @@
+---
+import Icon from "./Icon.astro";
+import SectionHeading from "./SectionHeading.astro";
+import { visitorResponsibility } from "../data/site";
+---
+
+<section id="responsibility" class="section section-dark responsibility-section" aria-labelledby="responsibility-title">
+  <div class="shell">
+    <SectionHeading
+      id="responsibility-title"
+      eyebrow="科普與訪客責任"
+      title="當一個受歡迎的訪客"
+      description="夜市是許多人的工作場所，也是在地居民的日常生活空間。理解它的文化脈絡、照顧好自己的安全，並尊重環境與他人，就是最好的旅行方式。"
+    />
+
+    <div class="responsibility-grid">
+      {visitorResponsibility.map((card) => (
+        <article class="responsibility-card">
+          <span class="responsibility-icon" aria-hidden="true"><Icon name={card.icon as any} size={22} /></span>
+          <h3>{card.title}</h3>
+          <ul>
+            {card.points.map((point) => (
+              <li>{point}</li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

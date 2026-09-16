@@ -28,6 +28,10 @@ const imageUrl = new URL(image, siteUrl);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#1b1712" />
     <meta name="color-scheme" content="light" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="桃園觀光夜市" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
@@ -60,6 +64,14 @@ const imageUrl = new URL(image, siteUrl);
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-HXM22WWPKP');
+    </script>
+
+    <script is:inline>
+      if ("serviceWorker" in navigator && window.location.protocol.startsWith("https")) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch(() => {});
+        });
+      }
     </script>
   </head>
   <body>

@@ -1,0 +1,40 @@
+---
+import Icon from "./Icon.astro";
+import SectionHeading from "./SectionHeading.astro";
+import { heritageNote, heritageStories, heritageTimeline } from "../data/site";
+---
+
+<section id="heritage" class="section section-warm heritage-section" aria-labelledby="heritage-title">
+  <div class="shell">
+    <SectionHeading
+      id="heritage-title"
+      eyebrow="文史與地方記憶"
+      title="從廟口到觀光夜市：一條街的身世"
+      description="夜市不只是攤位的集合，也是城市生活史的縮影。以下依時間軸與地方記憶，帶你認識桃園觀光夜市的來時路。"
+    />
+
+    <ol class="heritage-timeline">
+      {heritageTimeline.map((item) => (
+        <li class="heritage-step">
+          <span class="heritage-era">{item.era}</span>
+          <div class="heritage-body">
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <div class="heritage-stories">
+      {heritageStories.map((story) => (
+        <article class="heritage-story">
+          <span class="heritage-story-icon" aria-hidden="true"><Icon name={story.icon as any} size={20} /></span>
+          <h3>{story.title}</h3>
+          <p>{story.text}</p>
+        </article>
+      ))}
+    </div>
+
+    <p class="section-note">{heritageNote}</p>
+  </div>
+</section>

@@ -1,0 +1,478 @@
+---
+import Icon from "./Icon.astro";
+import SectionHeading from "./SectionHeading.astro";
+
+// 於伺服器端取得即時天氣與多日預報（server island，隨請求產生並快取）
+const LATITUDE = 25.0026972;
+const LONGITUDE = 121.3060018;
+
+const params = new URLSearchParams({
+  latitude: String(LATITUDE),
+  longitude: String(LONGITUDE),
+  current: "temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m",
+  hourly: "precipitation_probability,precipitation,weather_code,wind_speed_10m",
+  daily:
+    "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max,sunrise,sunset",
+  timezone: "Asia/Taipei",
+  forecast_days: "7",
+  wind_speed_unit: "kmh"
+});
+
+const endpoint = `https://api.open-meteo.com/v1/forecast?${params.toString()}`;
+
+// 讓產生的天氣島嶼可被瀏覽器與邊緣節點短暫快取，避免每次瀏覽都回源。
+Astro.response.headers.set("Cache-Control", "public, max-age=600, s-maxage=1800, stale-while-revalidate=3600");
+
+type OpenMeteoResponse = {
+  current?: {
+    time: string;
+    temperature_2m: number;
+    relative_humidity_2m: number;
+    apparent_temperature: number;
+    precipitation: number;
+    weather_code: number;
+    wind_speed_10m: number;
+    wind_gusts_10m: number;
+  };
+  hourly?: {
+    time: string[];
+    precipitation_probability: number[];
+    precipitation: number[];
+    weather_code: number[];
+    wind_speed_10m: number[];
+  };
+  daily?: {
+    time: string[];
+    weather_code: number[];
+    temperature_2m_max: number[];
+    temperature_2m_min: number[];
+    precipitation_probability_max: number[];
+    precipitation_sum: number[];
+    uv_index_max: number[];
+    wind_speed_10m_max: number[];
+    wind_gusts_10m_max: number[];
+    sunrise: string[];
+    sunset: string[];
+  };
+};
+
+let weather: OpenMeteoResponse | null = null;
+
+try {
+  const response = await fetch(endpoint, {
+    // 於邊緣節點快取上游回應（server-side cache）
+    cf: { cacheTtl: 1800, cacheEverything: true }
+  } as RequestInit & { cf: Record<string, unknown> });
+  if (response.ok) {
+    weather = (await response.json()) as OpenMeteoResponse;
+  }
+} catch {
+  weather = null;
+}
+
+const codeInfo = (code: number): { label: string; icon: string } => {
+  const table: Array<[number[], string, string]> = [
+    [[0], "晴朗", "sun"],
+    [[1], "晴時多雲", "sun-cloud"],
+    [[2], "多雲", "cloud"],
+    [[3], "陰天", "overcast"],
+    [[45, 48], "有霧", "fog"],
+    [[51, 53, 55, 56, 57], "毛毛雨", "rain"],
+    [[61, 63, 65, 66, 67], "降雨", "rain"],
+    [[71, 73, 75, 77], "降雪", "rain"],
+    [[80, 81, 82], "陣雨", "rain"],
+    [[85, 86], "陣雪", "rain"],
+    [[95, 96, 99], "雷雨", "thunder"]
+  ];
+  const found = table.find(([codes]) => codes.includes(code));
+  return { label: found?.[1] ?? "多雲", icon: found?.[2] ?? "cloud" };
+};
+
+const iconPaths: Record<string, string> = {
+  sun: '<circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.4v2.3M12 19.3v2.3M2.4 12h2.3M19.3 12h2.3M5.5 5.5 3.9 3.9M20.1 20.1l-1.6-1.6M5.5 18.5 3.9 20.1M20.1 3.9l-1.6 1.6"></path>',
+  "sun-cloud": '<circle cx="8.6" cy="7.8" r="3"></circle><path d="M8.6 2.2v1.6M3.1 7.8H1.5M4.8 4 3.7 2.9M12.4 4l1.1-1.1"></path><path d="M8 18.6h8.4a3.5 3.5 0 0 0 .3-7A5 5 0 0 0 7.3 13a3 3 0 0 0 .7 5.6Z"></path>',
+  cloud: '<path d="M7.4 18.5h8.7a3.8 3.8 0 0 0 .4-7.6 5.4 5.4 0 0 0-10.4 1.3 3.2 3.2 0 0 0 1.3 6.3Z"></path>',
+  overcast: '<path d="M6.5 15.4h9a3.6 3.6 0 0 0 .3-7.2A5 5 0 0 0 6 9.5a3 3 0 0 0 .5 5.9Z"></path><path d="M4.6 19.4h12"></path>',
+  rain: '<path d="M7.5 15h8.6a3.4 3.4 0 0 0 .3-6.8A5 5 0 0 0 7 9.5 3 3 0 0 0 7.5 15Z"></path><path d="M9 18.4l-1 2.4M13 18.4l-1 2.4M17 18.4l-1 2.4"></path>',
+  thunder: '<path d="M7.5 14h8.6a3.4 3.4 0 0 0 .3-6.8A5 5 0 0 0 7 8.5 3 3 0 0 0 7.5 14Z"></path><path d="M12.6 15.4 11 19h2.5l-1.4 3.2"></path>',
+  fog: '<path d="M4 9.4h16M3 13h18M5 16.6h14"></path>',
+  wind: '<path d="M3 8.5h9.5a2.5 2.5 0 1 0-2.5-2.5M3 12.5h13a2.5 2.5 0 1 1-2.5 2.5M3 16.5h7"></path>'
+};
+
+// 由公里／小時換算蒲福風級，方便一般旅客理解「風大不大」。
+const beaufort = (kmh: number): number => {
+  const limits = [1, 6, 12, 20, 29, 39, 50, 62, 75, 89, 103, 118];
+  return Math.min(limits.filter((limit) => kmh >= limit).length, 12);
+};
+
+// 降雨型態嚴重度：數字越大越劇烈，用於挑出當晚最需要注意的狀況。
+const rainSeverity = (code: number): number => {
+  if ([95, 96, 99].includes(code)) return 5;
+  if ([65, 67, 82].includes(code)) return 4;
+  if ([63, 66, 81].includes(code)) return 3;
+  if ([61, 80, 55, 57].includes(code)) return 2;
+  if ([51, 53, 56].includes(code)) return 1;
+  return 0;
+};
+
+const digits = (value: number | undefined | null) =>
+  typeof value === "number" && Number.isFinite(value) ? Math.round(value) : null;
+
+const current = weather?.current;
+const daily = weather?.daily;
+const hourly = weather?.hourly;
+
+const nowInfo = current ? codeInfo(current.weather_code) : null;
+const currentTemp = digits(current?.temperature_2m);
+const feelsLike = digits(current?.apparent_temperature);
+const humidity = digits(current?.relative_humidity_2m);
+const nowCode = current?.weather_code ?? null;
+
+const nowRainSeverity = nowCode != null ? rainSeverity(nowCode) : 0;
+const isFog = [45, 48].includes(nowCode ?? -1);
+const isClear = [0, 1].includes(nowCode ?? -1);
+
+// 以當地時區判斷「今天」與傍晚時段（逛夜市的主要時間）
+const tzNow = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+const pad = (value: number) => String(value).padStart(2, "0");
+const todayKey = `${tzNow.getFullYear()}-${pad(tzNow.getMonth() + 1)}-${pad(tzNow.getDate())}`;
+
+// 夜市的重點時段：17:00–23:00，逐時找出最需要注意的狀況
+let eveningChance: number | null = null;
+let eveningSeverity = 0;
+let eveningPrecipSum = 0;
+let eveningWindKmh: number | null = null;
+
+if (hourly?.time) {
+  const eveningIndexes = hourly.time
+    .map((time, index) => ({ time, index }))
+    .filter(({ time }) => {
+      if (!time.startsWith(todayKey)) return false;
+      const hour = Number(time.slice(11, 13));
+      return hour >= 17 && hour <= 23;
+    })
+    .map(({ index }) => index);
+
+  if (eveningIndexes.length) {
+    const chances = eveningIndexes
+      .map((index) => hourly.precipitation_probability?.[index])
+      .filter((value): value is number => typeof value === "number");
+    const precip = eveningIndexes
+      .map((index) => hourly.precipitation?.[index])
+      .filter((value): value is number => typeof value === "number");
+    const winds = eveningIndexes
+      .map((index) => hourly.wind_speed_10m?.[index])
+      .filter((value): value is number => typeof value === "number");
+    const severity = eveningIndexes
+      .map((index) => hourly.weather_code?.[index])
+      .filter((value): value is number => typeof value === "number")
+      .map(rainSeverity);
+
+    if (chances.length) eveningChance = Math.max(...chances);
+    if (severity.length) eveningSeverity = Math.max(...severity);
+    if (precip.length) eveningPrecipSum = precip.reduce((sum, value) => sum + value, 0);
+    if (winds.length) eveningWindKmh = Math.max(...winds);
+  }
+}
+
+const todayChance = digits(daily?.precipitation_probability_max?.[0]);
+const todayPrecipSum = daily?.precipitation_sum?.[0] ?? null;
+const rainChance = eveningChance ?? todayChance;
+
+const maxRainSeverity = Math.max(nowRainSeverity, eveningSeverity);
+const isThunder = maxRainSeverity >= 5;
+const isHeavyRain = !isThunder && (maxRainSeverity === 4 || eveningPrecipSum >= 20 || (todayPrecipSum ?? 0) >= 30);
+const isLightRain = !isThunder && !isHeavyRain && maxRainSeverity >= 1 && maxRainSeverity <= 2;
+const likelyRain =
+  !isThunder && !isHeavyRain && !isLightRain && typeof rainChance === "number" && rainChance >= 60;
+const hasRainDim = isThunder || isHeavyRain || isLightRain || likelyRain;
+
+const todayMax = digits(daily?.temperature_2m_max?.[0]);
+const todayMin = digits(daily?.temperature_2m_min?.[0]);
+const tempDiff = todayMax != null && todayMin != null ? todayMax - todayMin : null;
+const hot = (todayMax ?? 0) >= 32;
+const veryHot = (todayMax ?? 0) >= 36;
+const cold = todayMax != null && todayMax <= 10;
+
+const currentWindKmh = current?.wind_speed_10m ?? null;
+const currentWindLevel = currentWindKmh != null ? beaufort(currentWindKmh) : null;
+const gustKmh = current?.wind_gusts_10m ?? daily?.wind_gusts_10m_max?.[0] ?? null;
+const gustLevel = gustKmh != null ? beaufort(gustKmh) : null;
+const adviceWindKmh = eveningWindKmh ?? currentWindKmh ?? daily?.wind_speed_10m_max?.[0] ?? null;
+const adviceWindLevel = adviceWindKmh != null ? beaufort(adviceWindKmh) : null;
+// 卡片顯示取「當下」與「今晚」較大者，確保不會低估風勢
+const displayWindLevel =
+  currentWindLevel == null && adviceWindLevel == null
+    ? null
+    : Math.max(currentWindLevel ?? 0, adviceWindLevel ?? 0);
+const windyLevel = (adviceWindLevel ?? 0) >= 5 || (gustLevel ?? 0) >= 6;
+const strongWind = (adviceWindLevel ?? 0) >= 7 || (gustLevel ?? 0) >= 8;
+
+// 紫外線以「今日最強」呈現，因為白天行程才是防曬重點
+const uvIndex = daily?.uv_index_max?.[0] ?? null;
+const uvLevel =
+  uvIndex == null ? null : uvIndex >= 8 ? "很強" : uvIndex >= 6 ? "強" : uvIndex >= 3 ? "中等" : "弱";
+const strongUv = uvIndex != null && uvIndex >= 5;
+
+const sunset = daily?.sunset?.[0] ? daily.sunset[0].slice(11, 16) : null;
+
+// ---- 條件觸發建議引擎：只輸出符合當下天氣的內容 ----
+const risks: Array<{ title: string; text: string }> = [];
+
+if (isThunder) {
+  risks.push({
+    title: "雷雨",
+    text: "預報顯示可能出現雷雨，請勿在空曠處、樹下或水邊逗留，並留意雷擊與瞬間強風。"
+  });
+}
+if (isHeavyRain) {
+  risks.push({
+    title: "降雨偏強",
+    text: "降雨較明顯，街區與騎樓容易積水濕滑，請避開低窪路段並放慢腳步。"
+  });
+}
+if (strongWind) {
+  risks.push({
+    title: "風力偏強",
+    text: "請遠離招牌、懸掛物與臨時攤架；雨傘較難使用，建議改穿雨衣。"
+  });
+}
+if (isFog) {
+  risks.push({
+    title: "能見度偏低",
+    text: "有霧或能見度較差，自駕與叫車回程請減速慢行，並預留交通時間。"
+  });
+}
+if (veryHot) {
+  risks.push({
+    title: "高溫",
+    text: "白天高溫明顯，戶外行程請縮短並多補充水分，傍晚再前往夜市較舒適。"
+  });
+}
+if (cold) {
+  risks.push({ title: "低溫", text: "氣溫偏低，請做好保暖，長者與幼童尤須留意。" });
+}
+
+const outfit: string[] = [];
+if (isThunder || isHeavyRain) {
+  outfit.push("建議穿防潑水外套與防滑鞋，避免容易濕透的布鞋。");
+} else if (isLightRain || likelyRain) {
+  outfit.push("建議穿防潑水外套與防滑鞋，雨天路面較濕滑。");
+}
+
+if (cold) {
+  outfit.push("氣溫偏低，建議厚外套、圍巾等保暖衣物。");
+} else if (hot) {
+  outfit.push("氣溫偏高，建議輕薄透氣、吸汗材質的衣物。");
+}
+
+if (tempDiff != null && tempDiff > 8) {
+  outfit.push(`日夜溫差約 ${tempDiff}°C，建議帶一件可穿脫的薄外套。`);
+}
+
+if (windyLevel) {
+  outfit.push("風力偏大，帽子容易被吹落，也不建議穿寬鬆長裙。");
+}
+
+if (strongUv) {
+  outfit.push("白天紫外線偏強，可穿薄長袖或攜帶防曬用品。");
+}
+
+if (!outfit.length) {
+  outfit.push("天氣大致穩定，穿著平常外出衣物即可。");
+}
+
+const plan: string[] = [];
+if (isThunder) {
+  plan.push("露天攤位體驗較差，建議以有座位、有遮棚的店家為主，並留意隨時可能出現的強降雨。");
+} else if (isHeavyRain) {
+  plan.push("不建議長時間在戶外遊逛，可安排室內行程，或縮短夜市的停留時間。");
+} else if (isLightRain || likelyRain) {
+  plan.push("可能出現降雨，露天攤位體驗較差；建議優先選擇有座位區的店家，或改以室內景點為主。");
+}
+
+if (strongWind) {
+  plan.push("強風時露天座位較不安穩，建議改以外帶或室內座位為主。");
+} else if (windyLevel) {
+  plan.push("風力偏大，露天座位與招牌下方請多加留意。");
+}
+
+if (veryHot || hot) {
+  plan.push("白天行程請避開正午前後，傍晚 17:30 後再進場，逛起來更舒服。");
+}
+
+if (!plan.length) {
+  plan.push(
+    isClear
+      ? "天氣晴朗，傍晚進場最舒服，也適合拍攝夜市燈光與街景。"
+      : "光線柔和、沒有烈日，適合邊走邊逛，長時間停留也較不耗體力。"
+  );
+}
+
+const packSet = new Set<string>();
+if (hasRainDim) {
+  if (isThunder || windyLevel || strongWind) {
+    packSet.add("輕便雨衣");
+  } else {
+    packSet.add("摺疊傘");
+  }
+  packSet.add("防潑水外套");
+}
+if (hot) packSet.add("飲用水");
+if (strongUv) {
+  packSet.add("防曬乳");
+  packSet.add("太陽眼鏡");
+  if (!windyLevel && !strongWind) packSet.add("帽子");
+}
+if (cold) packSet.add("保暖外套");
+else if (tempDiff != null && tempDiff > 8) packSet.add("薄外套");
+if (isFog) packSet.add("口罩");
+if ((humidity ?? 0) >= 85) packSet.add("手帕或濕紙巾");
+packSet.add("適量現金");
+
+const pack = Array.from(packSet);
+
+type SummaryIcon = "umbrella" | "wind" | "sun" | "walk";
+let summary: { tone: string; icon: SummaryIcon; text: string };
+if (isThunder) {
+  summary = { tone: "wet", icon: "umbrella", text: "今晚可能打雷下雨，帶輕便雨衣比帶傘好用。" };
+} else if (isHeavyRain) {
+  summary = { tone: "wet", icon: "umbrella", text: "預計有較明顯降雨，記得帶雨具並放慢腳步。" };
+} else if (likelyRain) {
+  summary = { tone: "wet", icon: "umbrella", text: "今晚降雨機率高，記得帶傘或輕便雨衣。" };
+} else if (isLightRain) {
+  summary = { tone: "maybe", icon: "umbrella", text: "可能有短暫細雨，帶把折傘較安心。" };
+} else if (strongWind) {
+  summary = { tone: "maybe", icon: "wind", text: "風力偏強，雨傘較難使用，行走請多留意。" };
+} else if (veryHot || hot) {
+  summary = { tone: "maybe", icon: "sun", text: "天氣偏熱，白天少曬、傍晚進場最舒服。" };
+} else if (strongUv) {
+  summary = { tone: "maybe", icon: "sun", text: "紫外線偏強，白天行程記得防曬。" };
+} else if (windyLevel) {
+  summary = { tone: "maybe", icon: "wind", text: "風力稍大，逛起來還算舒服，留意帽子。" };
+} else {
+  summary = { tone: "calm", icon: "walk", text: "今晚天氣穩定，適合慢慢逛夜市。" };
+}
+
+const weekdays = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
+const forecast = (daily?.time ?? []).map((date, index) => {
+  const parsed = new Date(`${date}T12:00:00+08:00`);
+  const info = codeInfo(daily?.weather_code?.[index] ?? 2);
+  const isToday = index === 0;
+  return {
+    date,
+    label: isToday ? "今天" : index === 1 ? "明天" : weekdays[parsed.getDay()],
+    short: `${parsed.getMonth() + 1}/${parsed.getDate()}`,
+    max: digits(daily?.temperature_2m_max?.[index]),
+    min: digits(daily?.temperature_2m_min?.[index]),
+    chance: digits(daily?.precipitation_probability_max?.[index]),
+    label2: info.label,
+    icon: info.icon
+  };
+});
+---
+
+<SectionHeading
+      eyebrow="即時天氣"
+      title="出發前，先看一眼今晚的天氣。"
+      description="夜市位在開放街區，天候直接影響走路、排隊與用餐的舒適度。以下為桃園市桃園區的即時天氣、未來一週預報，以及依當下天氣整理的行前建議。"
+    />
+
+    {current ? (
+      <>
+        <div class="weather-panel">
+          <div class="weather-now">
+            <div class="weather-now-main">
+              <span class="weather-icon weather-icon-lg" set:html={`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[nowInfo?.icon ?? "cloud"]}</svg>`}></span>
+              <div>
+                <p class="weather-now-temp">{currentTemp}<span>°C</span></p>
+                <p class="weather-now-label">{nowInfo?.label}</p>
+              </div>
+            </div>
+            <div class="weather-metrics">
+              <div><span>體感</span><strong>{feelsLike ?? "—"}°</strong></div>
+              <div><span>濕度</span><strong>{humidity ?? "—"}%</strong></div>
+              <div><span>今晚降雨</span><strong>{typeof rainChance === "number" ? `${rainChance}%` : "—"}</strong></div>
+              <div><span>今晚風力</span><strong>{displayWindLevel != null ? `${displayWindLevel} 級` : "—"}</strong></div>
+              <div><span>紫外線峰值</span><strong>{uvLevel ?? "—"}</strong></div>
+              <div><span>日落</span><strong>{sunset ?? "—"}</strong></div>
+            </div>
+            <p class={`weather-advice weather-advice-${summary.tone}`}>
+              <Icon name={summary.icon} size={18} />
+              {summary.text}
+            </p>
+          </div>
+
+          <div class="weather-week">
+            <p class="weather-week-title">未來 7 天</p>
+            <ul class="weather-days">
+              {forecast.map((day) => (
+                <li class:list={["weather-day", day.label === "今天" && "is-today"]}>
+                  <div class="weather-day-head">
+                    <strong>{day.label}</strong>
+                    <span>{day.short}</span>
+                  </div>
+                  <span class="weather-icon" set:html={`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[day.icon]}</svg>`}></span>
+                  <p class="weather-day-temp"><strong>{day.max}°</strong><span>{day.min}°</span></p>
+                  <p class="weather-day-rain"><Icon name="rain" size={13} />{day.chance ?? 0}%</p>
+                  <p class="weather-day-label">{day.label2}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div class="weather-advisory">
+          <div class="weather-advisory-head">
+            <p class="eyebrow">今晚怎麼穿、怎麼逛</p>
+            <h3>依目前天氣，幫你把該準備的事整理好。</h3>
+          </div>
+
+          {risks.length ? (
+            <div class="weather-risk">
+              <p class="weather-risk-title"><Icon name="shield" size={19} />風險提醒</p>
+              <ul>
+                {risks.map((risk) => (
+                  <li>
+                    <strong>{risk.title}</strong>
+                    <span>{risk.text}</span>
+                  </li>
+                ))}
+              </ul>
+              <p class="weather-risk-note">
+                上述提醒為依預報研判的天氣風險；若中央氣象署已發布颱風、豪雨、強風等特報，或現場另有管制，請一律以其公告為準。
+              </p>
+            </div>
+          ) : (
+            <p class="weather-risk-calm"><Icon name="shield" size={18} />目前沒有特殊天氣風險提示。</p>
+          )}
+
+          <div class="weather-lanes">
+            <article class="weather-lane">
+              <p class="weather-lane-title"><Icon name="shirt" size={19} />出行穿搭</p>
+              <ul>
+                {outfit.map((item) => <li>{item}</li>)}
+              </ul>
+            </article>
+            <article class="weather-lane">
+              <p class="weather-lane-title"><Icon name="walk" size={19} />遊玩安排</p>
+              <ul>
+                {plan.map((item) => <li>{item}</li>)}
+              </ul>
+            </article>
+            <article class="weather-lane">
+              <p class="weather-lane-title"><Icon name="backpack" size={19} />隨身物品</p>
+              <ul class="weather-tags">
+                {pack.map((item) => <li>{item}</li>)}
+              </ul>
+            </article>
+          </div>
+        </div>
+      </>
+    ) : (
+      <p class="weather-unavailable">目前暫無法取得即時天氣，請稍後再試，或於出發前查看氣象預報。</p>
+    )}
+
+    <p class="weather-note">
+      天氣資料為自動更新，僅供行程安排參考；颱風、豪雨與臨時管制請以中央氣象署與現場公告為準。
+    </p>

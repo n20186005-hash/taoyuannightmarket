@@ -1,0 +1,44 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import { seasonalGuide, seasonalNote } from "../data/site";
+---
+
+<section id="seasons" class="section section-paper seasonal-section" aria-labelledby="seasons-title">
+  <div class="shell">
+    <SectionHeading
+      id="seasons-title"
+      eyebrow="季節遊覽策略"
+      title="什麼季節來，體驗差很多"
+      description="依桃園地區長期氣候平均歸納的四季特性，協助你依天氣調整裝備、時段與期待。夜市位於開放街區，季節與降雨對體驗的影響比室內景點更明顯。"
+    />
+
+    <div class="table-scroll">
+      <table class="season-table">
+        <caption class="visually-hidden">桃園地區四季遊覽策略對照表</caption>
+        <thead>
+          <tr>
+            <th scope="col">期間</th>
+            <th scope="col">氣溫概略</th>
+            <th scope="col">降雨特性</th>
+            <th scope="col">夜市體感</th>
+            <th scope="col">建議</th>
+          </tr>
+        </thead>
+        <tbody>
+          {seasonalGuide.map((row) => (
+            <tr>
+              <th scope="row">{row.season}</th>
+              <td>{row.temp}</td>
+              <td>{row.rain}</td>
+              <td>{row.feel}</td>
+              <td>{row.tip}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <p class="section-note">{seasonalNote}</p>
+    <p class="section-note">氣候概略參考：中央氣象署長期氣候統計（近 30 年氣候平均值）。</p>
+  </div>
+</section>

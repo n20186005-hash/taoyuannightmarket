@@ -1,0 +1,42 @@
+---
+import Icon from "./Icon.astro";
+import SectionHeading from "./SectionHeading.astro";
+import { dayTripPlans } from "../data/site";
+---
+
+<section id="itinerary" class="section section-paper daytrip-section" aria-labelledby="itinerary-title">
+  <div class="shell">
+    <SectionHeading
+      id="itinerary-title"
+      eyebrow="推薦通用遊覽路線"
+      title="半日遊與全日遊，兩種通用安排"
+      description="若想把夜市放進一整天的行程，以下是兩種通用框架：半日適合當天來回，全日則串連舊城景點與夜市夜色。實際時間請依個人步調與當日交通彈性調整。"
+    />
+
+    <div class="daytrip-grid">
+      {dayTripPlans.map((plan) => (
+        <article class="daytrip-card">
+          <div class="daytrip-head">
+            <span class="daytrip-icon" aria-hidden="true"><Icon name={plan.icon as any} size={22} /></span>
+            <div>
+              <h3>{plan.label}</h3>
+              <p class="daytrip-meta">{plan.duration}</p>
+            </div>
+          </div>
+          <p class="daytrip-summary">{plan.summary}</p>
+          <ol class="daytrip-steps">
+            {plan.steps.map((step) => (
+              <li>
+                <span class="daytrip-time">{step.time}</span>
+                <div class="daytrip-step-body">
+                  <strong>{step.title}</strong>
+                  <p>{step.description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

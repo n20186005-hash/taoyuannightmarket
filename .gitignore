@@ -1,5 +1,51 @@
+# ---------------------------------------------------------------
+# 不需要提交 / 上傳的檔案（本專案手動部署於 Cloudflare Workers）
+# 部署時 Wrangler 只會上傳 assets.directory（Astro 建置輸出），
+# 其餘原始碼與開發檔案都不需要進版控或上傳。
+# ---------------------------------------------------------------
+
+# 依賴套件
 node_modules/
+.pnpm-store/
+
+# 建置輸出（部署產物，不進版控；由 astro build 重新產生）
 dist/
+.output/
+
+# Astro / Vite 快取
 .astro/
+.vite/
+
+# Cloudflare / Wrangler
 .wrangler/
+.wrangler-dry/
+.dev.vars
+.wrangler.toml.bak
+
+# 環境變數（含金鑰，切勿提交）
+.env
+.env.*
+!.env.example
+
+# 日誌
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 編輯器與作業系統
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 .DS_Store
+Thumbs.db
+desktop.ini
+
+# 憑證與臨時檔
+*.pem
+.dryrun/
