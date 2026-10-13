@@ -1,0 +1,102 @@
+---
+import TopicPage from "../components/TopicPage.astro";
+import TopicLinks from "../components/TopicLinks.astro";
+import { attraction } from "../data/site";
+
+export const prerender = true;
+
+const title = "桃園觀光夜市交通地圖｜桃園車站、公車與入口導航";
+const description = "桃園觀光夜市位於中正路與北埔路口。整理從桃園火車站、機場、大眾運輸與自駕怎麼到，以及 Google 地圖嵌入與步行入口導航。";
+
+const crumbs = [
+  { name: "首頁", href: "/" },
+  { name: "交通地圖", href: "/transport/" }
+];
+
+const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent("桃園觀光夜市 桃園區中正路 北埔路")}&output=embed`;
+---
+
+<TopicPage
+  title={title}
+  description={description}
+  eyebrow="交通地圖"
+  h1="桃園觀光夜市交通與地圖"
+  lead="夜市位於桃園區中正路與北埔路口，距桃園火車站約 1.2 公里。下面整理大眾運輸、自駕與步行進場方式。"
+  crumbs={crumbs}
+>
+  <section class="topic-section">
+    <h2>大眾運輸怎麼到</h2>
+    <div class="topic-rule"></div>
+    <div class="topic-grid cols-2">
+      <article class="topic-card">
+        <h3>火車（台鐵）</h3>
+        <p>桃園火車站（台鐵）距夜市約 1.2 公里，沿中正路步行約 15–20 分鐘；或於火車站周邊搭乘市區公車至北埔路／中正路一帶。</p>
+      </article>
+      <article class="topic-card">
+        <h3>市區公車</h3>
+        <p>可於桃園火車站前或周邊站牌轉乘前往北埔路、中正路一帶；確切路線與班次依桃園市公車公告為準，建議出發前查詢即時動態。</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="topic-section">
+    <h2>機場旅客怎麼到</h2>
+    <div class="topic-rule"></div>
+    <p>從桃園國際機場前往，可搭乘機場捷運至桃園體育園區站或機場沿線轉乘，再接駁至桃園火車站後步行或轉乘公車；也可直接預約計程車／叫車前往中正路與北埔路口。實際車程會受路況與班次影響，請預留充裕時間。</p>
+  </section>
+
+  <section class="topic-section">
+    <h2>自行開車與停車</h2>
+    <div class="topic-rule"></div>
+    <p>周邊同時有路邊收費停車格與民營平面、立體停車場，但晚餐至宵夜尖峰時段車位流動慢、容易客滿，舊城街區也較容易壅塞。建議 18:00 前抵達，或停在外圍再步行進入。周邊停車細節與步行進場建議，請見 <a href="/parking/">停車攻略專頁</a>。</p>
+  </section>
+
+  <section class="topic-section">
+    <h2>步行進場與入口</h2>
+    <div class="topic-rule"></div>
+    <p>主要入口為「中正路與北埔路口」，地標好辨認。從入口沿北埔路進場，再轉往正康二街一帶；返程叫車時，建議回到中正路等較寬道路，定位更準、車輛也好停靠。</p>
+  </section>
+
+  <section class="topic-section">
+    <h2>地圖導航</h2>
+    <div class="topic-rule"></div>
+    <div class="topic-map">
+      <iframe
+        title="桃園觀光夜市地圖"
+        src={mapSrc}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <p class="topic-note">
+      地圖為 Google 地圖嵌入，實際路況、公車班次與導航請以 Google 地圖即時資訊為準；查看更多請前往
+      <a href={attraction.mapsShareUrl} target="_blank" rel="noopener noreferrer">Google 地圖條目</a>。
+    </p>
+  </section>
+
+  <TopicLinks current="transport" />
+</TopicPage>
+
+<style>
+  .topic-map {
+    margin-top: 24px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--cream);
+  }
+
+  .topic-map iframe {
+    display: block;
+    width: 100%;
+    height: 420px;
+    border: 0;
+  }
+
+  @media (max-width: 580px) {
+    .topic-map iframe {
+      height: 320px;
+    }
+  }
+</style>

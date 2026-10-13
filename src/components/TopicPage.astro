@@ -1,0 +1,103 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "./Header.astro";
+import Footer from "./Footer.astro";
+import Icon from "./Icon.astro";
+
+interface Crumb {
+  name: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow: string;
+  h1: string;
+  lead: string;
+  crumbs: Crumb[];
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
+  ogImage?: string;
+}
+
+const { title, description, eyebrow, h1, lead, crumbs, jsonLd, ogImage } = Astro.props;
+
+const siteUrl = Astro.site ?? new URL("https://taoyuannightmarket.com");
+const pageUrl = new URL(Astro.url.pathname, siteUrl).toString();
+
+const breadcrumbLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: crumbs.map((c, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: c.name,
+    item: new URL(c.href, siteUrl).toString()
+  }))
+};
+
+const webPageLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${pageUrl}#webpage`,
+  url: pageUrl,
+  name: title,
+  description,
+  inLanguage: "zh-Hant-TW",
+  isPartOf: { "@id": "https://taoyuannightmarket.com/#website" },
+  about: { "@id": "https://taoyuannightmarket.com/#attraction" }
+};
+
+const extra: Record<string, unknown>[] = Array.isArray(jsonLd)
+  ? jsonLd
+  : jsonLd
+    ? [jsonLd]
+    : [];
+
+const fullJsonLd = [breadcrumbLd, webPageLd, ...extra];
+---
+
+<Layout title={title} description={description} jsonLd={fullJsonLd} image={ogImage ?? "images/night-market-street.jpg"}>
+  <Header />
+  <main id="main-content" class="content-page topic-page">
+    <article class="shell">
+      <nav class="breadcrumb" aria-label="麵包屑">
+        {
+          crumbs.map((c, i) => (
+            <span class="breadcrumb-item">
+              {i < crumbs.length - 1 ? (
+                <a href={c.href}>{c.name}</a>
+              ) : (
+                <span aria-current="page">{c.name}</span>
+              )}
+              {i < crumbs.length - 1 && (
+                <span class="breadcrumb-sep" aria-hidden="true">
+                  /
+                </span>
+              )}
+            </span>
+          ))
+        }
+      </nav>
+
+      <p class="eyebrow topic-eyebrow">{eyebrow}</p>
+      <h1 class="topic-h1">{h1}</h1>
+      <p class="topic-lead">{lead}</p>
+
+      <slot />
+    </article>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-faq-button]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const expanded = button.getAttribute("aria-expanded") === "true";
+      const answerId = button.getAttribute("aria-controls");
+      const answer = answerId ? document.getElementById(answerId) : null;
+      button.setAttribute("aria-expanded", String(!expanded));
+      answer?.toggleAttribute("hidden", expanded);
+    });
+  });
+</script>

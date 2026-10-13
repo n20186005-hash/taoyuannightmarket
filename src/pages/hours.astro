@@ -1,0 +1,97 @@
+---
+import TopicPage from "../components/TopicPage.astro";
+import TopicLinks from "../components/TopicLinks.astro";
+import { hoursInfo, timeGuidance, faqs, attraction } from "../data/site";
+
+export const prerender = true;
+
+const title = "桃園觀光夜市營業時間｜今天有開嗎？幾點開始與結束";
+const description = "桃園觀光夜市一般每日 17:30 開始、00:00 結束。整理建議到訪時段、人潮時段參考、個別攤商差異與官方資訊核對，出發前快速確認營業狀況。";
+
+const crumbs = [
+  { name: "首頁", href: "/" },
+  { name: "營業時間", href: "/hours/" }
+];
+
+const hoursFaqs = [faqs[0], faqs[1], faqs[4]];
+---
+
+<TopicPage
+  title={title}
+  description={description}
+  eyebrow="營業時間"
+  h1="桃園觀光夜市營業時間"
+  lead="出發前先確認今天幾點開、開到幾點，以及人潮較少的時段，讓第一次來更順。"
+  crumbs={crumbs}
+>
+  <section class="topic-section">
+    <h2>一般營業時段</h2>
+    <div class="topic-rule"></div>
+    <p class="topic-hours-general">{hoursInfo.general}</p>
+    <p>{hoursInfo.generalNote}</p>
+  </section>
+
+  <section class="topic-section">
+    <h2>今日是否營業？</h2>
+    <div class="topic-rule"></div>
+    <p>桃園觀光夜市由許多獨立攤商組成，並非單一公司經營，因此沒有統一的「開／休」切換。多數攤位約 17:30 起陸續準備，想吃的熱門店建議早點到。個別店家若有店休或備料日，仍以現場與店家公告為準。</p>
+    <div class="topic-callout">
+      <strong>小提醒</strong>
+      <p>本頁僅依一般營業時段說明，不代表任一攤位當日一定營業。連續假期、雨天或特殊活動期間，現場狀況可能與平日不同。</p>
+    </div>
+  </section>
+
+  <section class="topic-section">
+    <h2>人潮與時段建議</h2>
+    <div class="topic-rule"></div>
+    <p>以下是一般經驗型建議，不是即時人流；天候、平假日與活動都會改變當晚狀況。</p>
+    <div class="topic-grid cols-2">
+      {
+        timeGuidance.map((slot) => (
+          <article class="topic-card">
+            <h3>{slot.time}｜{slot.title}</h3>
+            <p>{slot.description}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="topic-section">
+    <h2>官方資訊與核對</h2>
+    <div class="topic-rule"></div>
+    <p>{hoursInfo.sourceNote}</p>
+    <p class="topic-note">
+      {hoursInfo.verified}・來源：<a href={attraction.govtTourismUrl} target="_blank" rel="noopener noreferrer">桃園市觀光旅遊網</a>
+    </p>
+  </section>
+
+  <section class="topic-section" id="faq">
+    <h2>常見問題</h2>
+    <div class="topic-rule"></div>
+    <div class="faq-list">
+      {
+        hoursFaqs.map((faq, index) => (
+          <article class="faq-item">
+            <h3>
+              <button
+                type="button"
+                aria-expanded={index === 0 ? "true" : "false"}
+                aria-controls={`hours-faq-answer-${index}`}
+                data-faq-button
+              >
+                <span>{faq.question}</span>
+                <span class="faq-plus" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div id={`hours-faq-answer-${index}`} class="faq-answer" hidden={index !== 0}>
+              <p>{faq.answer}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <TopicLinks current="hours" />
+</TopicPage>

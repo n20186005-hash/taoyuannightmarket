@@ -14,13 +14,14 @@ import Heritage from "../components/Heritage.astro";
 import SeasonalGuide from "../components/SeasonalGuide.astro";
 import VisitorFacilities from "../components/VisitorFacilities.astro";
 import VisitorResponsibility from "../components/VisitorResponsibility.astro";
+import TopicLinks from "../components/TopicLinks.astro";
 import { attraction, faqs, foods, googleRating, highlights, nearbyPlaces, quickFacts, routes, sourceReferences, timeGuidance } from "../data/site";
 
 // 首頁其餘內容維持靜態；僅天氣島嶼於伺服器隨請求取得即時資料。
 export const prerender = true;
 
-const title = "桃園觀光夜市幾點開？營業時間、北埔路美食與停車場攻略";
-const description = "桃園觀光夜市位於桃園區北埔路與正康二街，一般每日 17:30 開始營業至約 00:00。整理必吃美食、逛街路線、交通與周邊停車場、親子與雨天提醒，並彙整 Google 地圖評價重點。";
+const title = "桃園觀光夜市攻略｜2026營業時間、必吃美食、停車交通與地圖";
+const description = "桃園觀光夜市位於桃園區中正路與北埔路口。整理2026營業時間、必吃美食、附近停車場、交通方式與夜市入口地圖，出發前快速掌握實用資訊。";
 const googleMapsUrl = "https://www.google.com/maps/dir/?api=1&destination=%E6%A1%83%E5%9C%92%E8%A7%80%E5%85%89%E5%A4%9C%E5%B8%82%2C%E6%A1%83%E5%9C%92%E5%B8%82%E6%A1%83%E5%9C%92%E5%8D%80%E5%8C%97%E5%9F%94%E8%B7%AF%E8%88%87%E6%AD%A3%E5%BA%B7%E4%BA%8C%E8%A1%97";
 
 const structuredData = {
@@ -144,6 +145,7 @@ const structuredData = {
             <span class="hero-title-place">桃園觀光夜市</span>
             <span class="hero-title-loc">桃園市桃園區 · 台灣</span>
             <span class="hero-title-tagline">沿著北埔路，吃進老桃園的夜晚。</span>
+            <span class="hero-title-sub">營業時間、必吃美食與交通停車指南</span>
           </h1>
           <p class="hero-lead">超過 200 個攤位散落在街區巷弄，從鼎邊趖、鍋貼、煎蝦餅到古早味甜湯，一次整理第一次來最需要知道的事。</p>
           <div class="hero-actions">
@@ -614,6 +616,8 @@ const structuredData = {
         <a class="button button-primary" href="#top">回到行前資訊</a>
       </div>
     </section>
+
+    <TopicLinks />
   </main>
 
   <Footer />

@@ -1,0 +1,66 @@
+---
+import TopicPage from "../components/TopicPage.astro";
+import TopicLinks from "../components/TopicLinks.astro";
+import { foods } from "../data/site";
+
+export const prerender = true;
+
+const title = "桃園觀光夜市美食攻略｜必吃小吃與攤位指南";
+const description = "桃園觀光夜市必吃美食一次整理：黑人鼎邊趖、阿財鍋貼、蚵仔煎、煎蝦餅、地瓜球、豆花與烤馬鈴薯等在地小吃，建議先主食、再點心、最後甜品的吃法。";
+
+const crumbs = [
+  { name: "首頁", href: "/" },
+  { name: "必吃美食", href: "/food/" }
+];
+
+const categoryOrder = ["主食", "點心", "甜品"] as const;
+const grouped = categoryOrder.map((cat) => ({
+  cat,
+  items: foods.filter((f) => f.category === cat)
+}));
+---
+
+<TopicPage
+  title={title}
+  description={description}
+  eyebrow="必吃美食"
+  h1="桃園觀光夜市必吃美食"
+  lead="夜市以接地氣的在地小吃為主，店家多集中在北埔路一帶。下面整理代表性品項，建議先吃鹹食、再補點心、最後收尾甜品。"
+  crumbs={crumbs}
+>
+  {
+    grouped.map((group) => (
+      <section class="topic-section">
+        <h2>{group.cat}</h2>
+        <div class="topic-rule"></div>
+        <div class="topic-grid cols-2">
+          {group.items.map((food) => (
+            <article class="topic-card">
+              <h3>{food.name}</h3>
+              <p>{food.description}</p>
+              {food.location && (
+                <p class="topic-card-meta">參考位置：{food.location}</p>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="topic-section">
+    <h2>建議的吃法順序</h2>
+    <div class="topic-rule"></div>
+    <ul class="topic-list">
+      <li><strong>先主食：</strong>鼎邊趖、鍋貼、蚵仔煎、煎蝦餅，先填飽肚子再慢慢逛。</li>
+      <li><strong>再點心：</strong>地瓜球、香雞排、烤馬鈴薯、大腸包小腸，邊走邊吃更有感。</li>
+      <li><strong>最後甜品：</strong>豆花、杏仁豆腐收尾，怕膩的人可以兩人分一碗。</li>
+    </ul>
+    <div class="topic-callout">
+      <strong>關於照片</strong>
+      <p>本頁與首頁的美食圖多為「同類型餐點示意」，並非指定攤位的實拍；各攤位實際品項、價格與營業狀況請以現場為準。本站為非營利旅遊資訊站，沒有販售或代訂服務。</p>
+    </div>
+  </section>
+
+  <TopicLinks current="food" />
+</TopicPage>

@@ -1,0 +1,31 @@
+---
+import { topicPages } from "../data/topics";
+import Icon from "./Icon.astro";
+
+interface Props {
+  current?: string;
+  heading?: string;
+}
+
+const { current, heading = "延伸攻略" } = Astro.props;
+const links = topicPages.filter((t) => t.slug !== current);
+---
+
+<section class="topic-links" aria-label="相關攻略">
+  <h2>{heading}</h2>
+  <div class="topic-links-grid">
+    {
+      links.map((t) => (
+        <a class="topic-link-card" href={t.href}>
+          <span class="topic-link-kicker">{t.kicker}</span>
+          <h3>{t.title}</h3>
+          <p>{t.description}</p>
+          <span class="topic-link-go">
+            查看專頁
+            <Icon name="arrow" size={16} />
+          </span>
+        </a>
+      ))
+    }
+  </div>
+</section>

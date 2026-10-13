@@ -1,0 +1,66 @@
+---
+import TopicPage from "../components/TopicPage.astro";
+import TopicLinks from "../components/TopicLinks.astro";
+import { attraction } from "../data/site";
+
+export const prerender = true;
+
+const title = "桃園觀光夜市停車攻略｜附近停車場與步行入口";
+const description = "桃園觀光夜市周邊路邊車格與民營停車場並存。整理自駕停車建議、尖峰時段、步行入口與返回叫車位置，幫你避開找車位的麻煩。";
+
+const crumbs = [
+  { name: "首頁", href: "/" },
+  { name: "停車攻略", href: "/parking/" }
+];
+---
+
+<TopicPage
+  title={title}
+  description={description}
+  eyebrow="停車攻略"
+  h1="桃園觀光夜市停車攻略"
+  lead="夜市位於中正路與北埔路口周邊巷弄，晚間人車交雜，停車建議以周邊停車場為主，再步行進場。"
+  crumbs={crumbs}
+>
+  <section class="topic-section">
+    <h2>自駕怎麼停最順？</h2>
+    <div class="topic-rule"></div>
+    <p>周邊同時有路邊收費停車格與民營平面、立體停車場，但晚餐至宵夜尖峰時段車位流動慢、容易客滿，舊城街區也較容易壅塞。建議 18:00 前抵達，或停在外圍再步行進入，也可改搭大眾運輸或計程車。本站不推薦特定停車場，費率與空位請以現場公告為準。</p>
+    <ul class="topic-list">
+      <li><strong>路邊收費車格：</strong>北埔路、中正路周邊有收費車格，時段與費率依桃園市公告，夜間熱門時段常滿。</li>
+      <li><strong>民營／公有停車場：</strong>步行 5–10 分鐘範圍內有多處收費停車場，價格與剩餘車位依現場為準。</li>
+      <li><strong>火車站周邊：</strong>若從遠處來，可考慮停在桃園火車站周邊停車場，再轉乘或步行（見交通地圖專頁）。</li>
+    </ul>
+  </section>
+
+  <section class="topic-section">
+    <h2>步行進場與入口</h2>
+    <div class="topic-rule"></div>
+    <p>主要入口為「中正路與北埔路口」，地標好辨認。從入口沿北埔路進場，再轉往正康二街一帶；返程叫車時，建議回到中正路等較寬道路，定位更準、車輛也好停靠。夜市燈光與攤位相似度高，離開前可先記下停車場名稱或路邊地標，避免散場時迷路。</p>
+    <div class="topic-callout">
+      <strong>找車小提醒</strong>
+      <p>散場時人潮集中，預約叫車建議走到主幹道或火車站側再叫；若停在路邊，離開前先確認所在路段與巷弄編號，回程才好定位。</p>
+    </div>
+  </section>
+
+  <section class="topic-section">
+    <h2>不同對象的停車建議</h2>
+    <div class="topic-rule"></div>
+    <div class="topic-grid cols-3">
+      <article class="topic-card">
+        <h3>親子同遊</h3>
+        <p>推車與小孩移動慢，優先選有專人收費、動線清楚的停車場，減少在巷弄找車位的時間。</p>
+      </article>
+      <article class="topic-card">
+        <h3>朋友結伴</h3>
+        <p>多人分攤停車費更划算；可一人先下車看攤，另一人去找車位，省去繞圈。</p>
+      </article>
+      <article class="topic-card">
+        <h3>雨天來訪</h3>
+        <p>雨天攤位與人潮集中，路邊車格更難找，建議直接鎖定停車場而非路邊巡泊。</p>
+      </article>
+    </div>
+  </section>
+
+  <TopicLinks current="parking" />
+</TopicPage>
