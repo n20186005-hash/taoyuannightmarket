@@ -6,7 +6,7 @@ export interface TopicPageLink {
   description: string;
 }
 
-// 四個長尾專題頁；首頁、頁尾與各專題頁互鏈均引用同一份清單，保持一致。
+// 長尾專題頁；首頁、頁尾與各專題頁互鏈均引用同一份清單，保持一致。
 export const topicPages: TopicPageLink[] = [
   {
     slug: "hours",
@@ -35,5 +35,26 @@ export const topicPages: TopicPageLink[] = [
     kicker: "交通地圖",
     title: "桃園車站、公車與入口導航",
     description: "從桃園火車站、機場與外圍怎麼到中正路與北埔路口。"
+  },
+  {
+    slug: "stalls",
+    href: "/stalls/",
+    kicker: "攤位目錄",
+    title: "夜市攤位分區與找店方法",
+    description: "北埔路、正康二街與周邊巷弄怎麼找小吃、甜品和購物攤位。"
+  },
+  {
+    slug: "walking-route",
+    href: "/walking-route/",
+    kicker: "逛街路線",
+    title: "第一次逛夜市的步行順序",
+    description: "從中正路與北埔路口入場，安排 60、90 或 120 分鐘的夜市行程。"
+  },
+  {
+    slug: "nearby",
+    href: "/nearby/",
+    kicker: "周邊景點",
+    title: "桃園舊城景點與夜市半日遊",
+    description: "景福宮、新民老街、桃園77藝文町等白天可順遊的市區景點。"
   }
 ];

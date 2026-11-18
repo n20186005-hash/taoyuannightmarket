@@ -1,0 +1,18 @@
+---
+import TopicPage from "../components/TopicPage.astro";
+import TopicLinks from "../components/TopicLinks.astro";
+import { foods, attraction } from "../data/site";
+export const prerender = true;
+const crumbs = [{ name: "首頁", href: "/" }, { name: "攤位目錄", href: "/stalls/" }];
+const categories = ["主食", "點心", "甜品"] as const;
+---
+<TopicPage title="桃園觀光夜市攤位目錄｜北埔路、正康二街找店指南" description="桃園觀光夜市攤位目錄與分區指南，整理北埔路、正康二街的美食、點心、甜品及實際找攤方法；非即時攤位名冊。" eyebrow="攤位目錄" h1="桃園觀光夜市攤位目錄與找店指南" lead="桃園觀光夜市不是單一室內市場，攤商分布在北埔路、正康二街、正康一街及鄰近巷弄。這份分類清單方便先決定想吃什麼，再到現場核實店家位置。" crumbs={crumbs}>
+  <section class="topic-section"><h2>先認識夜市分區</h2><div class="topic-rule"></div><div class="topic-grid cols-3">
+    <article class="topic-card"><h3>中正路與北埔路口</h3><p>適合當作初次來訪的集合與導航起點。夜市是街區型商圈，不是固定單一出入口。</p></article>
+    <article class="topic-card"><h3>北埔路</h3><p>沿街尋找熟食、點心與甜品攤位；同一區段有不同店家的營業節奏。</p></article>
+    <article class="topic-card"><h3>正康二街與支巷</h3><p>繼續探索餐飲、服飾和日常商品。想找特定店家，請核對店名及門牌，避免只依總夜市定位。</p></article>
+  </div></section>
+  {categories.map((category) => <section class="topic-section"><h2>{category}攤位參考</h2><div class="topic-rule"></div><div class="topic-grid cols-2">{foods.filter((food) => food.category === category).map((food) => <article class="topic-card"><h3>{food.name}</h3><p>{food.description}</p><p class="topic-card-meta">參考區域：{food.location}</p>{food.sourceUrl && <p><a href={food.sourceUrl} target="_blank" rel="noopener noreferrer">查看這項餐點的參考資料 ↗</a></p>}</article>)}</div></section>)}
+  <section class="topic-section"><h2>如何找特定攤位？</h2><div class="topic-rule"></div><ol class="topic-list"><li>先在本頁選擇餐點，再查看資料中的店名與參考區域。</li><li>開啟<a href={attraction.mapsShareUrl} target="_blank" rel="noopener noreferrer">桃園觀光夜市 Google 地圖</a>，抵達後沿街確認攤位招牌與門牌。</li><li>如要查特定店家，直接搜尋「完整店名＋桃園」，不要把夜市整體定位當成店家精確位置。</li><li>遇到停業、搬遷、排隊或價格異動，依店家現場公告為準。</li></ol><div class="topic-callout"><strong>資料範圍</strong><p>這是依餐點類型整理的旅遊參考目錄，並非官方即時完整攤商名冊；不保證列出的每家店當日都有營業。官方夜市位置與街區說明可見<a href="https://travel.tycg.gov.tw/zh-tw/Consume/Detail/73" target="_blank" rel="noopener noreferrer">桃園觀光導覽網</a>（2026-11-18 查閱）。</p></div></section>
+  <TopicLinks current="stalls" />
+</TopicPage>

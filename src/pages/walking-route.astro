@@ -1,0 +1,14 @@
+---
+import TopicPage from "../components/TopicPage.astro";
+import TopicLinks from "../components/TopicLinks.astro";
+import { attraction } from "../data/site";
+export const prerender = true;
+const crumbs = [{ name: "首頁", href: "/" }, { name: "逛街路線", href: "/walking-route/" }];
+const plans = [{time:"60 分鐘",title:"快速吃兩攤",steps:["中正路與北埔路口集合並確認巷弄方向","沿北埔路選一道主食與一道點心","原路或沿可通行街口折返，預留排隊時間"]},{time:"90 分鐘",title:"經典夜市一圈",steps:["從北埔路進場，先吃熱食","轉往正康二街，探索點心、甜品與小店","返回北埔路一帶，選甜品或外帶"]},{time:"120 分鐘",title:"慢逛與分食",steps:["先由主要街口認路並查看現場人流","以主食、點心、甜品分三輪，穿插逛街休息","保留時間給排隊攤位與回程交通"]}];
+---
+<TopicPage title="桃園觀光夜市逛街路線｜60、90、120分鐘步行攻略" description="桃園觀光夜市第一次怎麼逛？從中正路與北埔路口開始，安排北埔路、正康二街的60、90、120分鐘彈性路線與夜間注意事項。" eyebrow="夜市路線" h1="桃園觀光夜市怎麼逛？三種步行路線" lead="夜市分布在街區巷弄，不必追求唯一的固定動線。以下是按停留時間安排的建議，而非經實測的精確里程或保證暢通路線。" crumbs={crumbs}>
+  <section class="topic-section"><h2>從哪裡開始？</h2><div class="topic-rule"></div><p>首次來訪可把「桃園市桃園區中正路與北埔路口」設為起點。依桃園市觀光旅遊局資料，攤位延伸到北埔路、正康二街與正康一街等巷弄；請留意當晚道路管制、車流與行人動線。</p><p><a href={attraction.mapsShareUrl} target="_blank" rel="noopener noreferrer">開啟夜市定位與導航 ↗</a>　・　<a href="/transport/">大眾運輸指南</a>　・　<a href="/parking/">停車建議</a></p></section>
+  {plans.map((plan) => <section class="topic-section"><h2>{plan.time}｜{plan.title}</h2><div class="topic-rule"></div><ol class="topic-list">{plan.steps.map((step) => <li>{step}</li>)}</ol></section>)}
+  <section class="topic-section"><h2>夜間行走與拍照建議</h2><div class="topic-rule"></div><div class="topic-grid cols-2"><article class="topic-card"><h3>帶小孩或長輩</h3><p>優先走較寬、容易折返的路段，避開擁擠隊伍；手推車可能需要配合攤位與路況調整。</p></article><article class="topic-card"><h3>想拍夜市街景</h3><p>在安全且不妨礙店家與行人的地方拍攝燈光、攤位招牌與食物。避免站在車道中央。</p></article></div><p class="topic-note">官方街區資訊：<a href="https://travel.tycg.gov.tw/zh-tw/Consume/Detail/73" target="_blank" rel="noopener noreferrer">桃園觀光導覽網</a>，2026-11-18 查閱；建議時間為本站行程規劃估計。</p></section>
+  <TopicLinks current="walking-route" />
+</TopicPage>

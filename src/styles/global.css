@@ -2453,6 +2453,54 @@ figure {
   margin-top: 58px;
 }
 
+.nearby-detail-image {
+  margin: 32px 0 0;
+}
+
+.nearby-detail-image img,
+.nearby-photo-link img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+.nearby-detail-image img { max-height: 540px; }
+.nearby-photo-link img { aspect-ratio: 3 / 2; margin-bottom: 18px; }
+.nearby-detail-image figcaption { margin-top: 8px; color: var(--ink-soft); font-size: 13px; }
+
+.nearby-hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.nearby-hero-facts > * {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.nearby-management {
+  border-left: 4px solid var(--accent, #9a6b39);
+  padding: 24px 28px;
+  border-radius: 0 14px 14px 0;
+  background: rgba(151, 125, 82, .07);
+}
+
+.nearby-management > p { line-height: 1.85; }
+
+@media (max-width: 600px) {
+  .nearby-management { padding: 20px 16px; }
+  .nearby-hero-facts { gap: 6px; }
+  .nearby-hero-facts > * { font-size: 12px; padding: 6px 10px; }
+}
+
 .topic-section > h2 {
   font-family: var(--font-serif);
   font-size: clamp(26px, 3vw, 38px);

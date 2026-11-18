@@ -1,0 +1,13 @@
+---
+import TopicPage from "../components/TopicPage.astro";
+import TopicLinks from "../components/TopicLinks.astro";
+import { nearbyAttractions, nearbyMapUrl } from "../data/nearby";
+export const prerender = true;
+const crumbs = [{ name: "首頁", href: "/" }, { name: "周邊景點", href: "/nearby/" }];
+---
+<TopicPage title="桃園觀光夜市周邊景點｜景福宮、新民老街、桃園77藝文町" description="桃園觀光夜市附近有哪些景點？整理桃園景福宮、新民老街、桃園77藝文町、光影文化館與舊城半日遊動線、官方資料和獨立地圖搜尋。" eyebrow="周邊探索" h1="桃園觀光夜市周邊景點與舊城半日遊" lead="把桃園觀光夜市留給傍晚，白天先走桃園舊城。以下地點與距離依桃園市觀光旅遊局的周邊景點資料整理，實際步行時間仍取決於路口與個人速度。" crumbs={crumbs}>
+  <section class="topic-section"><h2>附近值得順遊的十二個地點</h2><div class="topic-rule"></div><div class="topic-grid cols-2">{nearbyAttractions.map((place) => <article class="topic-card"><a href={`/nearby/${place.slug}/`} class="nearby-photo-link"><img src={place.photo} alt={place.photoAlt} loading="lazy" width="600" height="400" /></a><h3><a href={`/nearby/${place.slug}/`}>{place.name}</a></h3><p class="topic-card-meta">距夜市參考距離：{place.distance}・{place.category}</p><p>{place.introduction}</p><p><a href={`/nearby/${place.slug}/`}>查看歷史、地址、交通與遊覽專頁 →</a></p><p><a href={nearbyMapUrl(place)} target="_blank" rel="noopener noreferrer">Google 地圖搜尋 ↗</a></p></article>)}</div></section>
+  <section class="topic-section"><h2>怎麼排成半日遊？</h2><div class="topic-rule"></div><ol class="topic-list"><li>下午從桃園車站周邊出發，依開放資訊選擇桃園77藝文町或新民老街。</li><li>接續前往景福宮，認識桃園舊城宗教與街區脈絡。</li><li>傍晚移動到北埔路與中正路口，開始夜市美食行程；如遇休館，改採戶外街區散步。</li></ol><p><a href="/walking-route/">接著看夜市 60–120 分鐘逛法</a>　・　<a href="/food/">夜市必吃美食</a></p></section>
+  <section class="topic-section"><h2>資料來源與地圖說明</h2><div class="topic-rule"></div><p>地點與參考距離：<a href="https://travel.tycg.gov.tw/zh-tw/travel/nearby-attractions/969" target="_blank" rel="noopener noreferrer">桃園市觀光旅遊局夜市周邊景點清單</a>（2026-11-18 查閱）。各景點按名稱建立獨立 Google Maps 搜尋，並非已核實的專屬 Place ID；出發前請再核對正確入口與開館資訊。</p></section>
+  <TopicLinks current="nearby" />
+</TopicPage>
