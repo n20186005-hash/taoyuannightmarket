@@ -27,6 +27,8 @@ const relatedSlugs: Record<string, string[]> = {
   "damiaokou-police-station": ["jingfu-temple", "xinmin-old-street", "literature-museum"],
   "cihu-temple": ["jingfu-temple", "station-district", "lianhua-temple"],
   "railway-pavilion": ["station-district", "taoyuan-77", "jingfu-temple"]
+  ,"tudigong-museum": ["jingfu-temple", "cihu-temple", "taoyuan-main-library"]
+  ,"taoyuan-main-library": ["fenghe-park", "tudigong-museum", "lianhua-temple"]
 };
 const relatedPlaces = (relatedSlugs[place.slug] ?? []).map((slug) => nearbyAttractions.find((item) => item.slug === slug)).filter((item): item is NearbyAttraction => Boolean(item));
 const crumbs = [{ name: "首頁", href: "/" }, { name: "周邊景點", href: "/nearby/" }, { name: place.name, href: `/nearby/${place.slug}/` }];
@@ -44,7 +46,7 @@ const jsonLd = [
     "@context": "https://schema.org", "@type": "TouristAttraction", name: place.name,
     alternateName: place.english, description: place.introduction,
     url: `https://taoyuannightmarket.com/nearby/${place.slug}/`,
-    image: `https://taoyuannightmarket.com${place.photo}`,
+    image: place.photo.startsWith("https://") ? place.photo : `https://taoyuannightmarket.com${place.photo}`,
     address: { "@type": "PostalAddress", streetAddress: place.address, addressLocality: "桃園區", addressRegion: "桃園市", addressCountry: "TW" },
     hasMap: mapUrl
   },
@@ -52,7 +54,7 @@ const jsonLd = [
 ];
 ---
 
-<TopicPage title={title} description={description} eyebrow={place.category} h1={place.name} lead={place.tagline} crumbs={crumbs} jsonLd={jsonLd} ogImage={place.photo.slice(1)}>
+<TopicPage title={title} description={description} eyebrow={place.category} h1={place.name} lead={place.tagline} crumbs={crumbs} jsonLd={jsonLd} ogImage={place.photo.startsWith("https://") ? place.photo : place.photo.slice(1)}>
   <div class="nearby-hero-facts" aria-label="景點快速資訊">
     <span>{place.category}</span><span>{place.duration}</span><span>{place.opening}</span><span>費用：{place.admission}</span><a href={mapUrl} target="_blank" rel="noopener noreferrer">Google 地圖・查看最新評分 ↗</a>
     <a href={mapUrl} target="_blank" rel="noopener noreferrer">查看景點位置 ↗</a>
