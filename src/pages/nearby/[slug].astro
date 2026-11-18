@@ -3,6 +3,7 @@ import TopicPage from "../../components/TopicPage.astro";
 import TopicLinks from "../../components/TopicLinks.astro";
 import { nearbyAttractions, nearbyMapUrl, type NearbyAttraction } from "../../data/nearby";
 import { nearbyDetails } from "../../data/nearbyDetails";
+import { nearbyExperience } from "../../data/nearbyExperience";
 
 export const prerender = true;
 export function getStaticPaths() {
@@ -11,6 +12,7 @@ export function getStaticPaths() {
 
 const { place } = Astro.props as { place: NearbyAttraction };
 const detail = nearbyDetails[place.slug];
+const experience = nearbyExperience[place.slug];
 const mapUrl = nearbyMapUrl(place);
 const crumbs = [{ name: "首頁", href: "/" }, { name: "周邊景點", href: "/nearby/" }, { name: place.name, href: `/nearby/${place.slug}/` }];
 const title = `${place.name}｜地址、歷史特色、交通與桃園夜市順遊指南`;
@@ -37,15 +39,16 @@ const jsonLd = [
 
 <TopicPage title={title} description={description} eyebrow={place.category} h1={place.name} lead={place.tagline} crumbs={crumbs} jsonLd={jsonLd} ogImage={place.photo.slice(1)}>
   <div class="nearby-hero-facts" aria-label="景點快速資訊">
-    <span>{place.category}</span><span>{place.duration}</span><span>{place.opening}</span><a href={mapUrl} target="_blank" rel="noopener noreferrer">Google 地圖評價・查看最新 ↗</a>
+    <span>{place.category}</span><span>{place.duration}</span><span>{place.opening}</span><span>費用：{place.admission}</span><a href={mapUrl} target="_blank" rel="noopener noreferrer">Google 地圖・查看最新評分 ↗</a>
     <a href={mapUrl} target="_blank" rel="noopener noreferrer">查看景點位置 ↗</a>
   </div>
+  <p class="nearby-address-line"><strong>景點地址：</strong>{place.address}　<a href={mapUrl} target="_blank" rel="noopener noreferrer">前往地圖 ↗</a></p>
   <figure class="nearby-detail-image">
     <img src={place.photo} alt={place.photoAlt} loading="eager" decoding="async" width="1200" height="800" />
     <figcaption>景點實景照片・<a href={place.photoSource} target="_blank" rel="noopener noreferrer">照片原始來源</a></figcaption>
   </figure>
 
-  <section class="topic-section"><h2>探索{place.name}</h2><div class="topic-rule"></div><p>{place.introduction}</p><p>{detail.visitNarrative}</p><h3>遊覽建議</h3><ul class="topic-list">{place.tips.map((tip) => <li>{tip}</li>)}</ul><h3>景區特色</h3><ul class="topic-list">{place.highlights.map((highlight) => <li>{highlight}</li>)}</ul></section>
+  <section class="topic-section"><h2>探索{place.name}</h2><div class="topic-rule"></div><p>{place.introduction}</p><p>{detail.visitNarrative}</p><p>{experience.orientation}</p><h3>遊覽建議</h3><ul class="topic-list">{place.tips.map((tip) => <li>{tip}</li>)}</ul><h3>景區特色</h3><ul class="topic-list">{place.highlights.map((highlight) => <li>{highlight}</li>)}</ul></section>
 
   <section class="topic-section nearby-management"><p class="eyebrow">管理與文化背景</p><h2>關於{place.name}</h2><div class="topic-rule"></div><p><strong>管理主體：{detail.manager}。</strong>{detail.managerNote}</p><p class="topic-note">管理資料來源：<a href={detail.managerSource} target="_blank" rel="noopener noreferrer">查看主管機關或管理說明 ↗</a>（2026-11-18 查閱）。</p></section>
 
@@ -60,15 +63,17 @@ const jsonLd = [
 
   <section class="topic-section"><h2>開放時間與門票</h2><div class="topic-rule"></div><div class="topic-grid cols-2"><article class="topic-card"><h3>一般開放資訊</h3><p>{place.opening}</p><p>特展、節慶、休館與維護可能調整。</p></article><article class="topic-card"><h3>票價與費用</h3><p>{place.admission}</p><p>個別商店、演出或體驗的費用與公共通行不同，請以當期公告為準。</p></article></div></section>
 
+  <section class="topic-section"><h2>現場觀察重點</h2><div class="topic-rule"></div><p>{experience.orientation}</p><div class="topic-grid cols-3">{experience.observations.map((item, index) => <article class="topic-card"><p class="eyebrow">觀察 {String(index + 1).padStart(2, "0")}</p><h3>{item.title}</h3><p>{item.detail}</p></article>)}</div><p><strong>適合的遊覽方式：</strong>{experience.visitStyle}</p></section>
+
   <section class="topic-section"><h2>交通方式</h2><div class="topic-rule"></div><h3>開車或停車</h3><p>{detail.car}</p><h3>大眾運輸與步行</h3><p>{detail.transit}</p><h3>交通查詢</h3><p><a href={mapUrl} target="_blank" rel="noopener noreferrer">查詢{place.name}專屬地圖 ↗</a>　・　<a href="/transport/">桃園觀光夜市交通專頁</a></p></section>
 
-  <section class="topic-section"><h2>游覽路線與順遊安排</h2><div class="topic-rule"></div><p>與桃園觀光夜市的區域位置參考：{place.distance}。此數字不是實測步行路程，實際請依路線導航。</p><div class="topic-grid cols-3">{place.itinerary.map((item, index) => <article class="topic-card"><p class="eyebrow">第 {index + 1} 站</p><h3>{item}</h3><p>{index === 0 ? "先核對出入口、活動及開放時間；把需要預約或有休館時間的行程安排在前段。" : index === place.itinerary.length - 1 ? "保留交通及用餐彈性，遇到人潮或天候變化可調整停留時間。" : "沿路觀察此景點獨有的建築、文化或自然特色，依現場導引慢行。"}</p></article>)}</div><p><a href="/nearby/">查看其他桃園舊城景點</a>　・　<a href="/walking-route/">夜市步行攻略</a></p></section>
+  <section class="topic-section"><h2>游覽路線與順遊安排</h2><div class="topic-rule"></div><p>與桃園觀光夜市的區域位置參考：{place.distance}。此數字不是實測步行路程，實際請依路線導航。</p><div class="topic-grid cols-3">{place.itinerary.map((item, index) => <article class="topic-card"><p class="eyebrow">第 {index + 1} 站</p><h3>{item}</h3><p>{experience.routeNotes[index] ?? experience.visitStyle}</p></article>)}</div><p><a href="/nearby/">查看其他桃園舊城景點</a>　・　<a href="/walking-route/">夜市步行攻略</a></p></section>
 
   <section class="topic-section"><h2>發現{place.name}的魅力</h2><div class="topic-rule"></div><h3>歷史背景</h3><p>{place.history}</p><h3>建築與空間特色</h3><p>{place.architecture}</p><h3>地方文化與核心體驗</h3><p>{detail.culture}</p></section>
 
   <section class="topic-section"><h2>拍照機位與觀察重點</h2><div class="topic-rule"></div><div class="topic-grid cols-3">{detail.photoSpots.map((spot, index) => <article class="topic-card"><p class="eyebrow">機位 {index + 1}</p><h3>{spot.title}</h3><p>{spot.detail}</p></article>)}</div></section>
 
-  <section class="topic-section"><h2>遊覽須知與住宿建議</h2><div class="topic-rule"></div><ul class="topic-list">{place.tips.map((tip) => <li>{tip}</li>)}</ul><p>如果行程安排至晚上，可考慮桃園車站或桃園區市中心交通便利的住宿，先確認實際步行距離、入住時間與回程方式。本站不替特定旅宿背書。</p></section>
+  <section class="topic-section"><h2>遊覽須知與住宿建議</h2><div class="topic-rule"></div><ul class="topic-list">{place.tips.map((tip) => <li>{tip}</li>)}</ul><h3>適合誰來？</h3><p>{experience.visitStyle}</p><h3>住宿地點怎麼選？</h3><p>{experience.lodging}</p><p>如果行程安排至晚上，可考慮桃園車站或桃園區市中心交通便利的住宿，先確認實際步行距離、入住時間與回程方式。本站不替特定旅宿背書。</p></section>
 
   <section class="topic-section"><h2>遊客評價與旅遊印象</h2><div class="topic-rule"></div><p>{place.name}的適合玩法取決於到訪目的：{place.highlights.join("、")}。旅客可比較近期心得是否提到開放安排、參觀動線和現場體驗，再決定停留多久。</p><p>Google 地圖評分與評價數隨時變動，本站不展示未經核實的固定數字。<a href={mapUrl} target="_blank" rel="noopener noreferrer">前往{place.name}的 Google 地圖搜尋並查看最新評價 ↗</a></p></section>
 
