@@ -14,6 +14,21 @@ const { place } = Astro.props as { place: NearbyAttraction };
 const detail = nearbyDetails[place.slug];
 const experience = nearbyExperience[place.slug];
 const mapUrl = nearbyMapUrl(place);
+const relatedSlugs: Record<string, string[]> = {
+  "jingfu-temple": ["damiaokou-police-station", "xinmin-old-street", "taoyuan-77"],
+  "xinmin-old-street": ["jingfu-temple", "damiaokou-police-station", "literature-museum"],
+  "taoyuan-77": ["station-district", "jingfu-temple", "xinmin-old-street"],
+  "arts-cinema": ["micang-theater", "jingfu-temple", "xinmin-old-street"],
+  "micang-theater": ["arts-cinema", "jingfu-temple", "damiaokou-police-station"],
+  "literature-museum": ["jingfu-temple", "xinmin-old-street", "damiaokou-police-station"],
+  "fenghe-park": ["lianhua-temple", "station-district", "taoyuan-77"],
+  "station-district": ["taoyuan-77", "railway-pavilion", "jingfu-temple"],
+  "lianhua-temple": ["fenghe-park", "cihu-temple", "jingfu-temple"],
+  "damiaokou-police-station": ["jingfu-temple", "xinmin-old-street", "literature-museum"],
+  "cihu-temple": ["jingfu-temple", "station-district", "lianhua-temple"],
+  "railway-pavilion": ["station-district", "taoyuan-77", "jingfu-temple"]
+};
+const relatedPlaces = (relatedSlugs[place.slug] ?? []).map((slug) => nearbyAttractions.find((item) => item.slug === slug)).filter((item): item is NearbyAttraction => Boolean(item));
 const crumbs = [{ name: "首頁", href: "/" }, { name: "周邊景點", href: "/nearby/" }, { name: place.name, href: `/nearby/${place.slug}/` }];
 const title = `${place.name}｜地址、歷史特色、交通與桃園夜市順遊指南`;
 const description = `${place.name}（${place.english}）旅遊攻略：${place.tagline}。整理地址、開放資訊、特色、步行路線、實景照片與桃園觀光夜市順遊建議。`;
@@ -78,6 +93,8 @@ const jsonLd = [
   <section class="topic-section"><h2>遊客評價與旅遊印象</h2><div class="topic-rule"></div><p>{place.name}的適合玩法取決於到訪目的：{place.highlights.join("、")}。旅客可比較近期心得是否提到開放安排、參觀動線和現場體驗，再決定停留多久。</p><p>Google 地圖評分與評價數隨時變動，本站不展示未經核實的固定數字。<a href={mapUrl} target="_blank" rel="noopener noreferrer">前往{place.name}的 Google 地圖搜尋並查看最新評價 ↗</a></p></section>
 
   <section class="topic-section"><h2>交通指南・地址與地圖</h2><div class="topic-rule"></div><div class="topic-grid cols-2"><article class="topic-card"><h3>景點地址</h3><p>{place.address}</p><p>導航時請核對地圖顯示的景點名稱與實際入口；名稱相近的場館不可共用定位。</p></article><article class="topic-card"><h3>地圖與交通</h3><p>{detail.transit}</p><p><a href={mapUrl} target="_blank" rel="noopener noreferrer">開啟{place.name}專屬 Google 地圖搜尋 ↗</a></p></article></div></section>
+
+  <section class="topic-section"><h2>附近還可以去哪裡？</h2><div class="topic-rule"></div><p>延伸同一天的桃園市區行程；各景點有獨立地址、管理資訊與 Google 地圖，不共用導航目的地。</p><div class="topic-grid cols-3">{relatedPlaces.map((related) => <article class="topic-card"><a href={`/nearby/${related.slug}/`} class="nearby-photo-link"><img src={related.photo} alt={related.photoAlt} width="480" height="320" loading="lazy" /></a><h3><a href={`/nearby/${related.slug}/`}>{related.name}</a></h3><p>{related.tagline}</p><p><a href={`/nearby/${related.slug}/`}>閱讀獨立景點指南 →</a></p></article>)}</div></section>
 
   <section class="topic-section"><h2>常見問題</h2><div class="topic-rule"></div><div class="faq-list">{faq.map((item, index) => <article class="faq-item"><h3><button type="button" aria-expanded={index === 0 ? "true" : "false"} aria-controls={`nearby-${index}`} data-faq-button><span>{item.question}</span><span class="faq-plus" aria-hidden="true"></span></button></h3><div id={`nearby-${index}`} class="faq-answer" hidden={index !== 0}><p>{item.answer}</p></div></article>)}</div></section>
 
