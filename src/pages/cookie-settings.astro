@@ -1,0 +1,19 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Layout from "../layouts/Layout.astro";
+export const prerender = true;
+---
+<Layout title="Cookie 設定｜桃園觀光夜市" description="了解桃園觀光夜市指南的必要功能、統計分析與第三方 Cookie，及如何在瀏覽器管理。">
+  <Header />
+  <main id="main-content" class="content-page"><article class="shell">
+    <p class="eyebrow">COOKIE SETTINGS</p><h1>Cookie 設定</h1>
+    <p class="lead">你可以了解本站使用的 Cookie 類型，並透過瀏覽器管理與清除。本站目前未提供可控制所有第三方 Cookie 的站內同意管理平台。</p>
+    <h2>必要功能</h2><p>網站可能使用維持安全連線或基本功能所必需的儲存技術。這類功能可能由託管或防護服務提供。</p>
+    <h2>分析資料</h2><p>Google Analytics 可能依其設定使用 Cookie 來統計網站使用情況。你可以在瀏覽器停用第三方 Cookie，或使用 Google 提供的分析停用方式。</p>
+    <h2>外部嵌入</h2><p>Google 地圖等外部功能可能使用其自己的 Cookie。若禁止相關 Cookie，嵌入地圖或部分互動可能受到影響，但仍可利用外部連結查詢。</p>
+    <h2>如何調整？</h2><ol><li>開啟瀏覽器的「設定」或「隱私與安全性」。</li><li>尋找「Cookie／網站資料」，選擇封鎖、限制或清除。</li><li>重新整理本網站，確認你的設定是否符合需求。</li></ol>
+    <p>清除或封鎖 Cookie 不代表會撤回第三方先前已處理的資料。詳細內容請參閱<a href="/privacy-policy/">隱私政策</a>。</p>
+    <p class="topic-note">最近更新：2026 年 11 月 18 日。</p>
+  </article></main><Footer />
+</Layout>

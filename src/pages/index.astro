@@ -6,7 +6,6 @@ import Icon from "../components/Icon.astro";
 import ResponsiveImage from "../components/ResponsiveImage.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import Reviews from "../components/Reviews.astro";
-import SourcesSection from "../components/SourcesSection.astro";
 import Weather from "../components/Weather.astro";
 import AudiencePlans from "../components/AudiencePlans.astro";
 import DayTripPlans from "../components/DayTripPlans.astro";
@@ -15,7 +14,7 @@ import SeasonalGuide from "../components/SeasonalGuide.astro";
 import VisitorFacilities from "../components/VisitorFacilities.astro";
 import VisitorResponsibility from "../components/VisitorResponsibility.astro";
 import TopicLinks from "../components/TopicLinks.astro";
-import { attraction, faqs, foods, googleRating, highlights, nearbyPlaces, quickFacts, routes, sourceReferences, timeGuidance } from "../data/site";
+import { attraction, faqs, foods, googleRating, highlights, nearbyPlaces, quickFacts, routes, timeGuidance } from "../data/site";
 
 // 首頁其餘內容維持靜態；僅天氣島嶼於伺服器隨請求取得即時資料。
 export const prerender = true;
@@ -202,6 +201,11 @@ const structuredData = {
 
     <section id="weather" class="section weather-section" aria-label="即時天氣">
       <div class="shell">
+        <div class="weather-refresh-tools">
+          <button type="button" id="weather-refresh-button" class="weather-refresh-button" aria-controls="weather-refresh-result">↻ 刷新天氣資料</button>
+          <p id="weather-refresh-status" role="status" aria-live="polite">若天氣未顯示，可點擊刷新重新取得最新資料。</p>
+        </div>
+        <div id="weather-refresh-result" class="weather-refresh-result" hidden></div>
         <Weather server:defer>
           <div class="weather-loading" slot="fallback" aria-hidden="true">
             <p class="eyebrow">即時天氣</p>
@@ -210,6 +214,60 @@ const structuredData = {
         </Weather>
       </div>
     </section>
+
+    <script is:inline>
+      (() => {
+        const button = document.getElementById('weather-refresh-button');
+        const status = document.getElementById('weather-refresh-status');
+        const result = document.getElementById('weather-refresh-result');
+        if (!button || !status || !result) return;
+        button.addEventListener('click', async () => {
+          button.disabled = true;
+          status.textContent = '正在取得桃園最新天氣…';
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 12000);
+          try {
+            const url = new URL('https://api.open-meteo.com/v1/forecast');
+            url.search = new URLSearchParams({
+              latitude: '25.0026972', longitude: '121.3060018',
+              current: 'temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m',
+              daily: 'temperature_2m_max,temperature_2m_min,precipitation_probability_max',
+              timezone: 'Asia/Taipei', forecast_days: '7'
+            }).toString();
+            const response = await fetch(url, {cache: 'no-store', signal: controller.signal});
+            if (!response.ok) throw new Error('天氣服務暫時無法回應');
+            const data = await response.json();
+            if (!data.current || !Array.isArray(data.daily?.time)) throw new Error('資料尚未完整');
+            const format = (value, suffix = '') => Number.isFinite(value) ? `${Math.round(value)}${suffix}` : '—';
+            result.replaceChildren();
+            const heading = document.createElement('h3');
+            heading.textContent = `桃園即時天氣 ${format(data.current.temperature_2m, '°C')}`;
+            result.appendChild(heading);
+            const details = document.createElement('p');
+            details.textContent = `體感 ${format(data.current.apparent_temperature, '°C')} · 濕度 ${format(data.current.relative_humidity_2m, '%')} · 風速 ${format(data.current.wind_speed_10m, ' km/h')}`;
+            result.appendChild(details);
+            const listTitle = document.createElement('h4');
+            listTitle.textContent = '未來七日預報（最高／最低／降雨機率）';
+            result.appendChild(listTitle);
+            const list = document.createElement('ul');
+            list.className = 'weather-refreshed-days';
+            data.daily.time.forEach((day, i) => {
+              const row = document.createElement('li');
+              row.textContent = `${day.slice(5)}｜${format(data.daily.temperature_2m_max?.[i], '°')} / ${format(data.daily.temperature_2m_min?.[i], '°')}｜降雨 ${format(data.daily.precipitation_probability_max?.[i], '%')}`;
+              list.appendChild(row);
+            });
+            result.appendChild(list);
+            result.hidden = false;
+            status.textContent = `已刷新 · ${new Date().toLocaleString('zh-TW', {timeZone:'Asia/Taipei'})}（台灣時間）`;
+          } catch {
+            status.textContent = '目前無法更新天氣，請稍後再試或查看中央氣象署。';
+          } finally {
+            clearTimeout(timeout);
+            button.disabled = false;
+          }
+        });
+      })();
+    </script>
 
     <Reviews
       rating={googleRating.rating}
@@ -607,7 +665,6 @@ const structuredData = {
 
     <VisitorResponsibility />
 
-    <SourcesSection items={sourceReferences} />
 
     <section class="closing-section">
       <ResponsiveImage srcBase="/images/night-market-street" width={1024} height={683} alt="桃園觀光夜市熱鬧的小吃街景" />

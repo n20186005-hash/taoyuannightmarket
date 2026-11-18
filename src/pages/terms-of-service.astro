@@ -1,0 +1,19 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Layout from "../layouts/Layout.astro";
+export const prerender = true;
+---
+<Layout title="服務條款｜桃園觀光夜市" description="桃園觀光夜市旅遊指南內容使用、動態資訊、第三方連結及責任說明。">
+  <Header />
+  <main id="main-content" class="content-page"><article class="shell">
+    <p class="eyebrow">TERMS OF SERVICE</p><h1>服務條款</h1>
+    <p class="lead">本網站是提供行程規劃參考的獨立旅遊資訊項目。</p>
+    <h2>內容用途</h2><p>本網站提供夜市位置、交通、營業參考、周邊景點與文化資訊。內容不構成官方公告、預約確認或服務保證。</p>
+    <h2>資訊時效</h2><p>營業時段、攤位、價格、天氣、票價、交通與地圖內容可能改變。出發前請以管理單位、官方公告及現場資訊核實。</p>
+    <h2>外部網站</h2><p>本站包含 Google 地圖、政府觀光網站與其他第三方連結。外部服務由其營運者管理，並適用各自條款及隱私政策。</p>
+    <h2>使用與責任</h2><p>旅客應遵守公共場所秩序、交通規則及各景點規定。本站盡力維護資料準確性，但不保證所有動態內容即時且完整。</p>
+    <h2>變更與聯絡</h2><p>我們可能因服務與法規變化更新條款。發現不正確資料時，請透過網站已公開的聯絡方式提出修正建議。</p>
+    <p class="topic-note">最近更新：2026 年 11 月 18 日。另請參閱<a href="/privacy-policy/">隱私政策</a>及<a href="/sources/">資料來源</a>。</p>
+  </article></main><Footer />
+</Layout>

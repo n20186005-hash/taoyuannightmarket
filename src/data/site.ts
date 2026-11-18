@@ -218,7 +218,7 @@ export const faqs = [
   { question: "下雨天可以逛嗎？", answer: "可以，但街區沒有全程連續遮棚。雨傘會壓縮步行空間，若遇大雨，體驗會明顯下降。" },
   { question: "適合帶小孩或嬰兒車嗎？", answer: "適合提早到訪。建議 17:30–18:30 進場，優先走較寬路段，避開晚間最擁擠時段，並留意熱油攤位與車流。" },
   { question: "需要準備現金嗎？", answer: "建議準備適量現金。部分店家可能支援電子支付，但街邊攤位的付款方式並不一致。" },
-  { question: "桃園觀光夜市在 Google 地圖上的評分是多少？", answer: "本站頁面顯示的評分為 4.0 分（約 21,141 則評價），評分與評價數同步自 Google 地圖使用者評價，同步時間為 2026 年 10 月。Google 地圖評分會隨新評價持續變動，最新數據請以 Google 地圖即時顯示為準。" }
+  { question: "桃園觀光夜市在 Google 地圖上的評分是多少？", answer: "本站頁面顯示的評分為 4.0 分（21,235 則評價），評分與評價數同步自 Google 地圖使用者評價，同步時間為 2026 年 11 月 18 日。Google 地圖評分會隨新評價持續變動，最新數據請以 Google 地圖即時顯示為準。" }
 ];
 
 export const attraction = {
@@ -237,8 +237,8 @@ export const attraction = {
 
 export const googleRating = {
   rating: 4.0,
-  reviewCount: 21141,
-  syncLabel: "2026 年 10 月"
+  reviewCount: 21235,
+  syncLabel: "2026 年 11 月 18 日"
 };
 
 // 營業時間說明：官方旅遊網不同頁面對「開始營業」有 17:00 與 17:30 兩種表述，
@@ -255,8 +255,8 @@ export const sourceReferences = [
   {
     tag: "評價",
     title: "Google 地圖使用者評價",
-    meta: "同步時間 2026 年 10 月",
-    note: "同步自 Google 地圖用戶評價，同步時間 2026 年 10 月；版權歸原作者與 Google 地圖所有。",
+    meta: "同步時間 2026 年 11 月 18 日",
+    note: "同步自 Google 地圖用戶評價，同步時間 2026 年 11 月 18 日；版權歸原作者與 Google 地圖所有。",
     url: "https://maps.app.goo.gl/go5NgBtPjFxGCXhL7",
     linkText: "在谷歌地图查看全部评价"
   },

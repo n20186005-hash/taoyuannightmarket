@@ -1,0 +1,17 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Layout from "../layouts/Layout.astro";
+import SourcesSection from "../components/SourcesSection.astro";
+import { sourceReferences } from "../data/site";
+
+export const prerender = true;
+---
+<Layout title="資料來源｜桃園觀光夜市" description="查閱桃園觀光夜市評價、官方旅遊資訊、Google 地圖與天氣資訊的來源及同步日期。">
+  <Header />
+  <main id="main-content">
+    <SourcesSection items={sourceReferences} />
+    <section class="content-page"><article class="shell"><h2>內容查核與聯絡</h2><p>本站整理公共旅遊資訊，營業、價格和各攤位狀況可能調整，出發前請以現場與官方公告為準。資料更新時間以各項目旁的日期為準。</p><p><a href="/">回到桃園觀光夜市首頁</a></p></article></section>
+  </main>
+  <Footer />
+</Layout>
